@@ -1,4 +1,10 @@
+using Concept.PatientRecordSystem.Models;
+using Hl7.Fhir.Model;
+using Hl7.Fhir.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Controllers
 {
@@ -15,9 +21,22 @@ namespace Concept.PatientRecordSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePatient()  
+        public async Task<IActionResult> CreatePatient(JsonDocument patientString)
         {
-           throw new NotImplementedException();
+
+            var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector);
+            try
+            {
+                Patient p = JsonSerializer.Deserialize<Patient>(patientString, options);
+            }
+            catch (DeserializationFailedException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            await System.Threading.Tasks.Task.FromResult(true);
+
+            return Ok();
         }
     }
 }
