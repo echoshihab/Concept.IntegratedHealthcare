@@ -39,8 +39,21 @@ namespace Concept.PatientRecordSystem.Controllers
 
             await System.Threading.Tasks.Task.FromResult(true);
 
-            return Ok();
+
+            return new ObjectResult(new OperationOutcome
+            {
+
+                Text = new Narrative
+                {
+                    Status = Narrative.NarrativeStatus.Generated,
+                    Div = "<div xmlns=\"http://www.w3.org/1999/xhtml\">The operation was successful</div>"
+                }
+
+            })
+            { StatusCode = StatusCodes.Status201Created };
         }
+
+
 
 
         [HttpGet("{id}")]
@@ -56,7 +69,7 @@ namespace Concept.PatientRecordSystem.Controllers
             {
                 Console.WriteLine($"{e.Message}");
             }
-            
+
             return Ok();
         }
     }
