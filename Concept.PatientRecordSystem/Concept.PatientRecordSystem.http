@@ -1,12 +1,96 @@
 @Concept.PatientRecordSystem_HostAddress = http://localhost:5025
 
 POST {{Concept.PatientRecordSystem_HostAddress}}/patient/
-Accept: application/json
-Accept-Language: en-US,en;q=0.5
+Content-Type: application/json
 
 {
-    "date": "2023-05-10",
-    "temperatureC": 30,
-    "summary": "Warm"
+  "resourceType": "Patient",  
+  "identifier": [
+    {
+      "system": "http://example.com/identifiers/mrn",
+      "value": "123456"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "Poe",
+      "given": [
+        "Edgar",
+        "Allan"
+      ]
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "555-1234",
+      "use": "home"
+    },
+    {
+      "system": "email",
+      "value": "edgar.poe@example.com",
+      "use": "home"
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1972-05-12",
+  "address": [
+    {
+      "use": "home",
+      "line": [
+        "123 Main Street"
+      ],
+      "city": "New York",
+      "state": "NY",
+      "postalCode": "10001",
+      "country": "USA"
+    }
+  ],
+  "generalPractitioner": [
+    {
+      "reference": "Practitioner/41f8b542-9879-4f4f-8a6f-071c938fd3ef"
+    }
+  ]
 }
+
+
 ###
+POST {{Concept.PatientRecordSystem_HostAddress}}/practitioner/
+Content-Type: application/json
+
+{
+  "resourceType": "Practitioner",
+  "id": "41f8b542-9879-4f4f-8a6f-071c938fd3ef",
+  "identifier": [
+    {
+      "system": "http://example.com/identifiers/hospital-id",
+      "value": "987654"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "House",
+      "given": [
+        "Gregory"
+      ],
+      "prefix": [
+        "Dr."
+      ]
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "666-5858",
+      "use": "work"
+    },
+    {
+      "system": "email",
+      "value": "greg.house@example.com",
+      "use": "work"
+    }
+  ]
+}
+
