@@ -11,7 +11,6 @@ namespace Concept.PatientRecordSystem.Controllers
     [Route("[controller]")]
     public class PractitionerController : ControllerBase
     {
-
         private readonly ILogger<PatientController> _logger;
 
         public PractitionerController(ILogger<PatientController> logger)
@@ -20,15 +19,14 @@ namespace Concept.PatientRecordSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePractitioner(JsonDocument practionerPayload)
+        public async Task<IActionResult> CreatePractitionerAsync(JsonDocument practionerPayload)
         {
-            Practitioner practioner;
-
+            
             var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector);
 
             try
             {
-                practioner = JsonSerializer.Deserialize<Practitioner>(practionerPayload, options) ?? throw new ArgumentNullException();
+               var practioner = JsonSerializer.Deserialize<Practitioner>(practionerPayload, options) ?? throw new ArgumentNullException();
             }
             catch (DeserializationFailedException e)
             {
@@ -52,7 +50,7 @@ namespace Concept.PatientRecordSystem.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetPractitioner(string id)
+        public async Task<IActionResult> GetPractitionerAsync(string id)
         {
             var patient = new Practitioner
             {
@@ -60,7 +58,6 @@ namespace Concept.PatientRecordSystem.Controllers
                 Name = [new HumanName { Use = HumanName.NameUse.Official, Family = "House", Given = ["Gregory"], Prefix = ["Dr."] }],
                 Telecom = [new ContactPoint { System = ContactPoint.ContactPointSystem.Phone, Value = "666-5858", Use = ContactPoint.ContactPointUse.Work }]
             };
-
 
             try
             {
@@ -72,6 +69,7 @@ namespace Concept.PatientRecordSystem.Controllers
                 Console.WriteLine($"{e.Message}");
             }
 
+            await System.Threading.Tasks.Task.FromResult(true);
             return Ok();
         }
     }
