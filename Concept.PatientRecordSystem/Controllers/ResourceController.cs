@@ -30,7 +30,6 @@ namespace Concept.PatientRecordSystem.Controllers
                 var fhirResource = JsonSerializer.Deserialize<JsonElement>(rawText);
 
                 resourceType = fhirResource.GetProperty("resourceType").ToString();
-
             }
             catch (DeserializationFailedException e)
             {

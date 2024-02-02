@@ -2,7 +2,7 @@
 
 namespace Concept.PatientRecordSystem.Models
 {
-    public class PatientIH : Patient
+    public class PatientDb : Resource
     {
       
     }
