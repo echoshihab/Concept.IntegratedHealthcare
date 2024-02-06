@@ -1,8 +1,12 @@
+using Concept.PatientRecordSystem.Factory;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IResourceServiceFactory, ResourceServiceFactory>();
 
 var app = builder.Build();
 

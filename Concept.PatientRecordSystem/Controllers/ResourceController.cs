@@ -1,3 +1,4 @@
+using Concept.PatientRecordSystem.Factory;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 using Hl7.Fhir.Validation;
@@ -12,10 +13,12 @@ namespace Concept.PatientRecordSystem.Controllers
     {
 
         private readonly ILogger<PatientController> _logger;
+        private readonly IResourceServiceFactory _resourceServiceFactory;
 
-        public ResourceController(ILogger<PatientController> logger)
+        public ResourceController(ILogger<PatientController> logger, IResourceServiceFactory resourceServiceFactory)
         {
             _logger = logger;
+            _resourceServiceFactory = resourceServiceFactory;
         }
 
         [HttpPost]
@@ -29,11 +32,15 @@ namespace Concept.PatientRecordSystem.Controllers
 
                 var fhirResource = JsonSerializer.Deserialize<JsonElement>(rawText);
 
-                resourceType = fhirResource.GetProperty("resourceType").ToString();
+                var resourceService = _resourceServiceFactory.GetResourceService(resourceType);
+
+                await resourceService.CreateAsync(fhirResourcePayload);
+
             }
-            catch (DeserializationFailedException e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                return BadRequest();
             }
 
             await System.Threading.Tasks.Task.FromResult(true);
