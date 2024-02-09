@@ -26,6 +26,8 @@ namespace Concept.PatientRecordSystem.Controllers
             try
             {
                 var patient = JsonSerializer.Deserialize<Patient>(patientPayload, options) ?? throw new ArgumentNullException();
+
+     
             }
             catch (DeserializationFailedException e)
             {

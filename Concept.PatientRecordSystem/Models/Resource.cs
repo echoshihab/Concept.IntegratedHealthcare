@@ -2,6 +2,6 @@
 {
     public class Resource
     {
-        public required string ResourceType { get; set; }
+        public string ResourceType { get; set; }
     }
 }

@@ -52,7 +52,7 @@ namespace Concept.PatientRecordSystem.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPractitionerAsync(string id)
         {
-            var patient = new Practitioner
+            var practitioner = new Practitioner
             {
                 Id = id,
                 Name = [new HumanName { Use = HumanName.NameUse.Official, Family = "House", Given = ["Gregory"], Prefix = ["Dr."] }],
@@ -61,7 +61,7 @@ namespace Concept.PatientRecordSystem.Controllers
 
             try
             {
-                patient.Validate(recurse: true, narrativeValidation: NarrativeValidationKind.FhirXhtml);
+                practitioner.Validate(recurse: true, narrativeValidation: NarrativeValidationKind.FhirXhtml);
             }
 
             catch (Exception e)

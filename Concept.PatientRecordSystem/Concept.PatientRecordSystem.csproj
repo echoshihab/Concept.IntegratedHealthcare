@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hl7.Fhir.R4" Version="5.4.0" />
+    <PackageReference Include="Firely.Fhir.Packages" Version="4.3.0" />
+    <PackageReference Include="Firely.Fhir.Validation.R4" Version="2.0.2" />
+    <PackageReference Include="Hl7.Fhir.R4" Version="5.5.1" />
   </ItemGroup>
 
 </Project>
