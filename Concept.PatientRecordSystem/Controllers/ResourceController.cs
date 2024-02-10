@@ -33,6 +33,7 @@ namespace Concept.PatientRecordSystem.Controllers
                 var fhirResource = JsonSerializer.Deserialize<JsonElement>(rawText);
 
                 var resourceService = _resourceServiceFactory.GetResourceService(fhirResource.GetProperty("resourceType").ToString());
+
                 await resourceService.CreateAsync(fhirResourcePayload);
 
             }

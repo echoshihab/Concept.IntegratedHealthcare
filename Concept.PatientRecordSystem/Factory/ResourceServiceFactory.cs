@@ -11,7 +11,7 @@ namespace Concept.PatientRecordSystem.Factory
         }
         public IResourceService<Resource> GetResourceService(string resourceType) => resourceType.ToUpper() switch
         {
-            "PATIENT" => new PatientResourceService(),
+            ApplicationConstants.PATIENT => new PatientResourceService(),
             _ => throw new NotSupportedException("Resource type not supported")
         };
     }

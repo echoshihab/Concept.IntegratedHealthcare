@@ -3,7 +3,6 @@ using Firely.Fhir.Packages;
 using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
-using Hl7.Fhir.Specification;
 using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
 using System.Text.Json;
@@ -20,35 +19,37 @@ namespace Concept.PatientRecordSystem.Service
             {
                 var patient = JsonSerializer.Deserialize<Patient>(fhirResource, options) ?? throw new ArgumentNullException();
 
+                var resolver = new FhirPackageSource(ModelInfo.ModelInspector, "https://packages.simplifier.net",
+                     new[] { "hl7.fhir.r4.core" }
+               );
 
-                var profileUrl = "https://www.hl7.org/fhir/us/core/";
+                var directoryResolver = new DirectorySource("Profiles", new DirectorySourceSettings
+                {
+                    IncludeSubDirectories = true
+                });
 
-                var fhirRelease = FhirRelease.R4;             
-              
-                var packageResolver = FhirPackageSource.CreateCorePackageSource(ModelInfo.ModelInspector, fhirRelease, profileUrl);
-                
-                var resourceResolver = new CachedResolver(packageResolver);
+                // ensure we can validate against both core and profiles in directory
+                var resourceResolver = new CachedResolver(new MultiResolver(resolver, directoryResolver));
 
-                var terminologyService = new LocalTerminologyService(resourceResolver);
+                var terminologyServices = new LocalTerminologyService(resourceResolver);
 
-                var validator = new Validator(resourceResolver, terminologyService);
+                var validator = new Validator(resourceResolver, terminologyServices);
 
-                var result = validator.Validate(patient);
+                var result = validator.Validate(patient, ApplicationConstants.PatientUSCoreProfile);
 
                 if (result.Success)
                 {
                     return new PatientDb();
                 }
 
-
+                throw new Exception("Invalid resource");
             }
             catch (DeserializationFailedException e)
             {
                 Console.WriteLine(e.Message);
             }
 
-
-            return await System.Threading.Tasks.Task.FromResult<PatientDb>(new PatientDb{ ResourceType = "Patient"});
+            return await System.Threading.Tasks.Task.FromResult<PatientDb>(new PatientDb { ResourceType = "Patient" });
         }
     }
 }
