@@ -1,3 +1,4 @@
+using Concept.PatientRecordSystem.Exceptions;
 using Concept.PatientRecordSystem.Factory;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
@@ -37,10 +38,15 @@ namespace Concept.PatientRecordSystem.Controllers
                 await resourceService.CreateAsync(fhirResourcePayload);
 
             }
+            catch (InvalidResourceException e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest();
+                throw;
             }
 
             await System.Threading.Tasks.Task.FromResult(true);

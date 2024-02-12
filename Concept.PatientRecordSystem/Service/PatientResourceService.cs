@@ -1,4 +1,5 @@
-﻿using Concept.PatientRecordSystem.Models;
+﻿using Concept.PatientRecordSystem.Exceptions;
+using Concept.PatientRecordSystem.Models;
 using Firely.Fhir.Packages;
 using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;
@@ -42,7 +43,7 @@ namespace Concept.PatientRecordSystem.Service
                     return new PatientDb();
                 }
 
-                throw new Exception("Invalid resource");
+                throw new InvalidResourceException("Invalid resource");
             }
             catch (DeserializationFailedException e)
             {
