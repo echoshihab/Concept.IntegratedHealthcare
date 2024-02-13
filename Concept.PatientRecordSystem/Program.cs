@@ -1,5 +1,6 @@
 using Concept.PatientRecordSystem.Exceptions;
 using Concept.PatientRecordSystem.Factory;
+using Concept.PatientRecordSystem.Persistence.Models;
 using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,3 +38,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+var test = new List<NamePart>
+{
+    new NamePart{NameType = "Test", Order = 1, Value = "Test"},
+    new NamePart{NameType = "Terst", Order = 2, Value = "Terst"},
+}

@@ -1,5 +1,5 @@
 ﻿using Concept.PatientRecordSystem.Exceptions;
-using Concept.PatientRecordSystem.Models;
+using Concept.PatientRecordSystem.Persistence.Models;
 using Firely.Fhir.Packages;
 using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;

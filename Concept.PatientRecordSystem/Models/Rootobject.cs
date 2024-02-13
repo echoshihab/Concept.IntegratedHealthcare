@@ -1,4 +1,6 @@
-﻿namespace Concept.PatientRecordSystem.Models
+﻿using Concept.PatientRecordSystem.Persistence.Models;
+
+namespace Concept.PatientRecordSystem.Models
 {
 
     public class Rootobject
