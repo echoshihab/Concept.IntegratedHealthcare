@@ -18,7 +18,7 @@ namespace Concept.PatientRecordSystem.Service
 
             try
             {
-                var patient = JsonSerializer.Deserialize<Patient>(fhirResource, options) ?? throw new ArgumentNullException();
+                var patient = JsonSerializer.Deserialize<Hl7.Fhir.Model.Patient>(fhirResource, options) ?? throw new ArgumentNullException();
 
                 var resolver = new FhirPackageSource(ModelInfo.ModelInspector, "https://packages.simplifier.net",
                      new[] { "hl7.fhir.r4.core" }
@@ -40,7 +40,7 @@ namespace Concept.PatientRecordSystem.Service
 
                 if (result.Success)
                 {
-                    return new PatientDb();
+                    return new Persistence.Models.Patient();
                 }
 
                 throw new InvalidResourceException("Invalid resource");
@@ -50,7 +50,7 @@ namespace Concept.PatientRecordSystem.Service
                 Console.WriteLine(e.Message);
             }
 
-            return await System.Threading.Tasks.Task.FromResult<PatientDb>(new PatientDb { ResourceType = "Patient" });
+            return await System.Threading.Tasks.Task.FromResult<Persistence.Models.Patient>(new Persistence.Models.Patient { ResourceType = "Patient" });
         }
     }
 }

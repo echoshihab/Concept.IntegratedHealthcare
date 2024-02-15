@@ -2,8 +2,8 @@
 {
     public class Telecom
     {
-        public string System { get; set; }
-        public Guid Value { get; set; }
-        public string Use { get; set; }
+        public Guid System { get; set; }
+        public string Value { get; set; }
+        public Guid Use { get; set; }
     }
 }
