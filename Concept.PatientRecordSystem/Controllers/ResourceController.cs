@@ -27,30 +27,15 @@ namespace Concept.PatientRecordSystem.Controllers
         {
             string resourceType = "";
 
-            try
-            {
-                var rawText = fhirResourcePayload.RootElement.GetRawText() ?? throw new ArgumentNullException();
+            var rawText = fhirResourcePayload.RootElement.GetRawText() ?? throw new ArgumentNullException();
 
-                var fhirResource = JsonSerializer.Deserialize<JsonElement>(rawText);
+            var fhirResource = JsonSerializer.Deserialize<JsonElement>(rawText);
 
-                var resourceService = _resourceServiceFactory.GetResourceService(fhirResource.GetProperty("resourceType").ToString());
+            var resourceService = _resourceServiceFactory.GetResourceService(fhirResource.GetProperty("resourceType").ToString());
 
-                await resourceService.CreateAsync(fhirResourcePayload);
-
-            }
-            catch (InvalidResourceException e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                throw;
-            }
+            await resourceService.CreateAsync(fhirResourcePayload);
 
             await System.Threading.Tasks.Task.FromResult(true);
-
 
             return new ObjectResult(new OperationOutcome
             {

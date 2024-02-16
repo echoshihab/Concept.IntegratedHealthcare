@@ -28,6 +28,11 @@ app.UseExceptionHandler(exceptionHandlerApp =>
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync(exceptionHandlerPathFeature?.Error.Message);   
         }
+        else if (exceptionHandlerPathFeature?.Error is Exception)
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsJsonAsync(exceptionHandlerPathFeature?.Error.Message);
+        }
     });
 });
 
@@ -39,9 +44,3 @@ app.MapControllers();
 
 app.Run();
 
-
-var test = new List<NamePart>
-{
-    new NamePart{NameType = "Test", Order = 1, Value = "Test"},
-    new NamePart{NameType = "Terst", Order = 2, Value = "Terst"},
-}

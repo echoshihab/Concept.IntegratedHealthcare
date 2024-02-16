@@ -13,7 +13,12 @@ Content-Type: application/json
   ],
   "name": [
     {
-      "use": "official"
+      "use": "official",
+        "family": "Poe",
+      "given": [
+        "Edgar",
+        "Allan"
+      ]
     }
   ],
   "telecom": [

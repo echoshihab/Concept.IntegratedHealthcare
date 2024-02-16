@@ -48,9 +48,8 @@ namespace Concept.PatientRecordSystem.Service
             catch (DeserializationFailedException e)
             {
                 Console.WriteLine(e.Message);
+                throw;
             }
-
-            return await System.Threading.Tasks.Task.FromResult<Persistence.Models.Patient>(new Persistence.Models.Patient { ResourceType = "Patient" });
         }
     }
 }
