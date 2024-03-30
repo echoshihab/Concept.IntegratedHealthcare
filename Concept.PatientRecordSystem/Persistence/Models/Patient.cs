@@ -1,15 +1,23 @@
-﻿using Concept.PatientRecordSystem.Models;
-
-namespace Concept.PatientRecordSystem.Persistence.Models
+﻿namespace Concept.PatientRecordSystem.Persistence.Models
 {
-    public class Patient : Resource
+    public class Patient : IdentifiedData
     {
-        public Guid Id { get; set; }
-        public string Mrn { get; set; }
-        public List<NamePart> NameParts { get; set; }
-        public Guid Gender { get; set; }
-        public string BirthDate { get; set; }
+        public Patient()
+        {
+            this.Identifiers = new HashSet<Identifier>();
+            this.Addresses = new HashSet<Address>();
+            this.NameParts = new HashSet<NamePart>();
+            this.Languages = new HashSet<PatientLanguage>();
+            this.Telecoms = new HashSet<PatientTelecom>();
+        }
 
-        public List<Address> Address;
+        public Guid GenderConceptId { get; set; }
+        public DateTime BirthDate { get; set; }
+
+        public ICollection<Identifier> Identifiers { get; set; }
+        public ICollection<NamePart> NameParts { get; set; }
+        public ICollection<Address> Addresses { get;set;}
+        public ICollection<PatientLanguage> Languages { get; set; }
+        public ICollection<PatientTelecom> Telecoms { get; set; }
     }
 }

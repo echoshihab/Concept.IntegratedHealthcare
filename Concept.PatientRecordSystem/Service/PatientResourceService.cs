@@ -10,9 +10,9 @@ using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Service
 {
-    public class PatientResourceService : IResourceService<Models.Resource>
+    public class PatientResourceService : IResourceService<Persistence.Models.IdentifiedData>
     {
-        public async Task<Models.Resource> CreateAsync(JsonDocument fhirResource)
+        public async Task<Persistence.Models.IdentifiedData> CreateAsync(JsonDocument fhirResource)
         {
             var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector);
 
