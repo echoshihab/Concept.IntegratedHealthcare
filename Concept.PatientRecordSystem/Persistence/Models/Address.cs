@@ -4,15 +4,17 @@
     {
         public Address()
         {
-            this.Lines = new List<string>();    
+            this.Lines = new List<string>();
         }
+
+        public Guid PatientId { get; set; }
         public Guid AddressUseConceptId { get; set; }
         public List<string> Lines { get; set; }
         public string? City { get; set; }
         public string? State { get; set; }
         public string? PostalCode { get; set; }
-
         public Concept AddressUseConcept { get; set; } = null!;
+        public Patient Patient { get; set; } = null!;
     }
 }
 

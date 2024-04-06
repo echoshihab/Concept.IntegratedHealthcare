@@ -8,5 +8,7 @@
         public string? Value { get; set; }
         public Concept ContactSystemConcept { get; set; } = null!;
         public Concept ContactPointUseConcept { get; set; } = null!;
+        public Patient Patient { get;set;} = null!;
+
     }
 }
