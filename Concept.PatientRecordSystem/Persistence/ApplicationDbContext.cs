@@ -17,6 +17,7 @@ namespace Concept.PatientRecordSystem.Persistence
                 .HasMany(p => p.Addresses)
                 .WithOne(a => a.Patient)
                 .HasForeignKey(a => a.PatientId);
+              
 
             // Patient and name
             modelBuilder.Entity<Patient>()
@@ -27,18 +28,20 @@ namespace Concept.PatientRecordSystem.Persistence
             // Patient and language
             modelBuilder.Entity<Patient>()
                 .HasMany(p => p.Languages)
-                .WithMany(l => l.Patients)
-                .UsingEntity<PatientLanguage>();
-
+                .WithOne(l => l.Patient)
+                .HasForeignKey(l => l.PatientId);
+                
             // Patient and telecommunication
             modelBuilder.Entity<Patient>()
                 .HasMany(p => p.Telecoms)
-                .WithOne(t => t.Patient);
+                .WithOne(t => t.Patient)
+                 .HasForeignKey(l => l.PatientId);
 
             // Patient and Identifier
             modelBuilder.Entity<Patient>()
                 .HasMany(p => p.Identifiers)
-                .WithOne(i => i.Patient);
+                .WithOne(i => i.Patient)
+                .HasForeignKey(i => i.PatientId);
 
             // Concept and concept set
             modelBuilder.Entity<Models.Concept>()

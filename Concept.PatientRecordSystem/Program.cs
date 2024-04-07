@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IResourceServiceFactory, ResourceServiceFactory>();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext"));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 
 var app = builder.Build();
 
