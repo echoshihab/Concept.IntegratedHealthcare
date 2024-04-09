@@ -1,4 +1,6 @@
-﻿namespace Concept.PatientRecordSystem.Persistence.Models
+﻿using Hl7.Fhir.Model;
+
+namespace Concept.PatientRecordSystem.Persistence.Models
 {
     public class Patient : IdentifiedData
     {
@@ -19,5 +21,7 @@
         public ICollection<Address> Addresses { get;set;}
         public ICollection<PatientLanguage> Languages { get; set; }
         public ICollection<PatientTelecom> Telecoms { get; set; }
+
+        public Concept GenderConcept { get;set;}
     }
 }

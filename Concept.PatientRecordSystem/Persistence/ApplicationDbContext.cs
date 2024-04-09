@@ -18,6 +18,9 @@ namespace Concept.PatientRecordSystem.Persistence
                 .WithOne(a => a.Patient)
                 .HasForeignKey(a => a.PatientId);
               
+            // Patient and Gender
+            modelBuilder.Entity<Patient>()
+                .HasOne(p => p.GenderConcept);
 
             // Patient and name
             modelBuilder.Entity<Patient>()
