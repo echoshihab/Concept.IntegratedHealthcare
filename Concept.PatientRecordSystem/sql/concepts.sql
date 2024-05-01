@@ -5,6 +5,7 @@ DECLARE
 	NameTypeConceptSet UUID := 'a16830e3-5d77-4457-8d6e-95d30fec9b83';
 	ContactSystemConceptSet UUID := '19325dc3-3a65-4c1b-a475-e54ab519dab3';
 	ContactPointUseConceptSet UUID := '9df86d35-0b98-4392-a4ac-dfb571140e1e';
+	GenderConceptSet UUID := 'a21c2487-a6b3-4e48-8f3a-5b32543b4411';
 
 BEGIN
 
@@ -15,8 +16,8 @@ VALUES
 		( AddressUseConceptSet,'AddressUse'), 
 		( NameTypeConceptSet,'NameType'), 
 		( ContactSystemConceptSet,'ContactSystem'), 
-		( ContactPointUseConceptSet,'ContactPointUse');
-	
+		( ContactPointUseConceptSet,'ContactPointUse'),
+		( GenderConceptSet, 'AdministrativeGender');
 
 -- language concepts
 INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
@@ -25,8 +26,6 @@ VALUES
 	('1da84595-42ac-4208-8e13-ce3a7228340b', 'es', 'es', 'Spanish'),
 	('935debed-1c1c-400b-a717-a352eb0e182c', 'zh', 'zh', 'Chinese'),
 	('c9f50963-0e83-4c50-b916-4b6e8e36ad79', 'fr', 'fr', 'French');	  
-
-
 
 -- Address use concepts Contact point use concepts
 INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
@@ -38,7 +37,6 @@ VALUES
 	('f32df4eb-c598-475d-82d9-c56c657dc73b', 'billing', 'billing', 'Billing'),
 	('2b397cdb-cba5-4371-befe-3e9029908021', 'mobile', 'mobile', 'Mobile');
 
-
 -- Contact system concepts
 INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
 VALUES 
@@ -49,6 +47,14 @@ VALUES
 	('6704e0c5-fbec-4cca-b52a-a10368bb5334', 'url', 'url', 'URL'),
 	('47d7ecf0-31bb-4d9e-9f7e-7fc18b8caaab', 'sms', 'sms', 'SMS'),
 	('cffc025b-aacc-4681-a49c-a242507a3b6a', 'other', 'other', 'Other');
+
+-- gender concepts
+INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
+VALUES 
+	('8021552e-5980-45b1-bd8d-9b30d57e67e9', 'Male', 'male', 'Male'),
+	('e35e3734-7767-47ae-8f32-a682907f682d', 'Female', 'female', 'Female'),
+	('0893a08c-d67d-429e-8e38-d497bc2e9716', 'Other', 'other', 'Other'),
+	('cb679791-ae0b-442a-ba75-6bd94fcf89dd', 'Unknown', 'unknown', 'Unknown');	
 
  -- Concept Concept Set 
     INSERT INTO public."ConceptConceptSet"("Id", "ConceptId", "ConceptSetId")
@@ -74,7 +80,11 @@ VALUES
     (gen_random_uuid(),'bcf5321b-1aab-4216-b918-fa0dddeddddd', ContactSystemConceptSet),
     (gen_random_uuid(),'6704e0c5-fbec-4cca-b52a-a10368bb5334', ContactSystemConceptSet),
     (gen_random_uuid(),'47d7ecf0-31bb-4d9e-9f7e-7fc18b8caaab', ContactSystemConceptSet),
-    (gen_random_uuid(),'cffc025b-aacc-4681-a49c-a242507a3b6a', ContactSystemConceptSet);
+    (gen_random_uuid(),'cffc025b-aacc-4681-a49c-a242507a3b6a', ContactSystemConceptSet),
+	(gen_random_uuid(), '8021552e-5980-45b1-bd8d-9b30d57e67e9', GenderConceptSet),
+	(gen_random_uuid(), 'e35e3734-7767-47ae-8f32-a682907f682d', GenderConceptSet),
+	(gen_random_uuid(), '0893a08c-d67d-429e-8e38-d497bc2e9716', GenderConceptSet),
+	(gen_random_uuid(), 'cb679791-ae0b-442a-ba75-6bd94fcf89dd', GenderConceptSet);
 
 END $$;
 
