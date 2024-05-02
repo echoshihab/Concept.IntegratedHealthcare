@@ -10,10 +10,10 @@ namespace Concept.PatientRecordSystem.Controllers
     public class ResourceController : ControllerBase
     {
 
-        private readonly ILogger<PatientController> _logger;
+        private readonly ILogger<ResourceController> _logger;
         private readonly IResourceServiceFactory _resourceServiceFactory;
 
-        public ResourceController(ILogger<PatientController> logger, IResourceServiceFactory resourceServiceFactory)
+        public ResourceController(ILogger<ResourceController> logger, IResourceServiceFactory resourceServiceFactory)
         {
             _logger = logger;
             _resourceServiceFactory = resourceServiceFactory;
@@ -22,31 +22,25 @@ namespace Concept.PatientRecordSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateResourceAsync(JsonDocument fhirResourcePayload)
         {
-            string resourceType = "";
-
             var rawText = fhirResourcePayload.RootElement.GetRawText() ?? throw new ArgumentNullException();
 
             var fhirResource = JsonSerializer.Deserialize<JsonElement>(rawText);
 
-            var resourceService = _resourceServiceFactory.GetResourceService(fhirResource.GetProperty("resourceType").ToString());
+            string resourceType = fhirResource.GetProperty(nameof(resourceType)).ToString();
+
+            var resourceService = _resourceServiceFactory.GetResourceService(resourceType);
 
             await resourceService.CreateAsync(fhirResourcePayload);
 
-            await System.Threading.Tasks.Task.FromResult(true);
-
-            return new ObjectResult(
-                new OperationOutcome
+            return new ObjectResult(new OperationOutcome
                 {
-
                     Text = new Narrative
                     {
                         Status = Narrative.NarrativeStatus.Generated,
                         Div = $"<div xmlns=\"http://www.w3.org/1999/xhtml\">The operation was successful with {resourceType}</div>"
                     }
-
                 })
                 { StatusCode = StatusCodes.Status201Created };
         }
-
     }
 }

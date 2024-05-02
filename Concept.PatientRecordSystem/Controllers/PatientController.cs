@@ -37,7 +37,6 @@ namespace Concept.PatientRecordSystem.Controllers
 
             return new ObjectResult(new OperationOutcome
             {
-
                 Text = new Narrative
                 {
                     Status = Narrative.NarrativeStatus.Generated,
