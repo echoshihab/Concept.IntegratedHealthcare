@@ -1,5 +1,5 @@
 ﻿using Concept.PatientRecordSystem.Exceptions;
-using Concept.PatientRecordSystem.Persistence.Models;
+using Concept.PatientRecordSystem.Persistence;
 using Firely.Fhir.Packages;
 using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;
@@ -12,6 +12,12 @@ namespace Concept.PatientRecordSystem.Service
 {
     public class PatientResourceService : IResourceService<Persistence.Models.IdentifiedData>
     {
+        //private readonly ApplicationDbContext _context;
+
+        public PatientResourceService()
+        {
+            //_context = context;
+        }
         public async Task<Persistence.Models.IdentifiedData> CreateAsync(JsonDocument fhirResource)
         {
             var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector);
@@ -40,7 +46,13 @@ namespace Concept.PatientRecordSystem.Service
 
                 if (result.Success)
                 {
-                    return new Persistence.Models.Patient();
+                    // map first
+                    // then context save changes all resources in same class - this means this class
+                    // worry about other stuff later
+                    var patientDb = new Persistence.Models.Patient();
+          
+
+                    
                 }
 
                 throw new InvalidResourceException("Invalid resource");

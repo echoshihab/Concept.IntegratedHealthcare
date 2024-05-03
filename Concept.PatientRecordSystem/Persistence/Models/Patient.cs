@@ -14,7 +14,9 @@ namespace Concept.PatientRecordSystem.Persistence.Models
         }
 
         public Guid GenderConceptId { get; set; }
-        public DateTime BirthDate { get; set; }
+        public ushort BirthYear { get; set; }
+        public ushort BirthMonth { get; set; }
+        public ushort BirthDay { get; set; }
 
         public ICollection<Identifier> Identifiers { get; set; }
         public ICollection<NamePart> NameParts { get; set; }
