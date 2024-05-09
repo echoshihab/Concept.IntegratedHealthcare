@@ -6,17 +6,18 @@ using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Service
 {
     public class PatientResourceService : IResourceService<Persistence.Models.IdentifiedData>
     {
-        //private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public PatientResourceService()
+        public PatientResourceService(ApplicationDbContext context)
         {
-            //_context = context;
+            _context = context;
         }
         public async Task<Persistence.Models.IdentifiedData> CreateAsync(JsonDocument fhirResource)
         {
@@ -48,11 +49,36 @@ namespace Concept.PatientRecordSystem.Service
                 {
                     // map first
                     // then context save changes all resources in same class - this means this class
-                    // worry about other stuff later
+                    // worry about other stuff later 
                     var patientDb = new Persistence.Models.Patient();
-          
 
+                    var birthDateArray = patient.BirthDate.Split('-');
+
+                    patientDb.BirthYear = ushort.Parse(birthDateArray[0]);
+
+                    if (birthDateArray.Length > 0)
+                    {
+                        patientDb.BirthMonth = ushort.Parse(birthDateArray[1]);
+                    } 
+
+                    if (birthDateArray.Length > 1)
+                    {
+                        patientDb.BirthDay = ushort.Parse(birthDateArray[2]);
+                    }
+
+                    // retrieve matching gender concept
+                    var genderConcept = await _context.ConceptSets
+                        .Where(c => c.Name == "AdministrativeGender")
+                        .Include(cs => cs.Concepts
+                        .Where(c => c.Value == patient.Gender.ToString()))
+                        .Select(c => c.Concepts.FirstOrDefault())
+                        .FirstOrDefaultAsync() ?? throw new InvalidResourceException("Invalid resource");
+
+                    patientDb.GenderConcept = genderConcept;
                     
+                    // add identifier
+                    
+
                 }
 
                 throw new InvalidResourceException("Invalid resource");

@@ -1,6 +1,8 @@
 using Concept.PatientRecordSystem.Exceptions;
 using Concept.PatientRecordSystem.Factory;
 using Concept.PatientRecordSystem.Persistence;
+using Concept.PatientRecordSystem.Persistence.Models;
+using Concept.PatientRecordSystem.Service;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IResourceServiceFactory, ResourceServiceFactory>();
+builder.Services.AddScoped<IResourceService<IdentifiedData>, PatientResourceService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 
