@@ -76,7 +76,21 @@ namespace Concept.PatientRecordSystem.Service
 
                     patientDb.GenderConcept = genderConcept;
                     
-                    // add identifier
+                    // add identifier 
+                    // TODO: change identifiers from ICollection<> to List<> to have access to add range. 
+                    foreach(var identifier in patient.Identifier)
+                    {
+                        patientDb.Identifiers.Add(new Persistence.Models.Identifier
+                        {
+                            System = identifier.System,
+                            Value = identifier.Value
+                        });                      
+                    }
+
+                 
+                    // add nameparts
+         
+
                     
 
                 }
