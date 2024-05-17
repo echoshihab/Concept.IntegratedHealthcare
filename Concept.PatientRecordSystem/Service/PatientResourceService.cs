@@ -6,6 +6,7 @@ using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -67,11 +68,8 @@ namespace Concept.PatientRecordSystem.Service
                     }
 
                     // retrieve matching gender concept
-                    var genderConcept = await _context.ConceptSets
-                        .Where(c => c.Name == "AdministrativeGender")
-                        .Include(cs => cs.Concepts
-                        .Where(c => c.Value == patient.Gender.ToString()))
-                        .Select(c => c.Concepts.FirstOrDefault())
+                    var genderConcept = await _context.ConceptSets.Where(c => c.Name == "AdministrativeGender").Include(cs => cs.Concepts
+                        .Where(c => c.Value == patient.Gender.ToString())).Select(c => c.Concepts.FirstOrDefault())
                         .FirstOrDefaultAsync() ?? throw new InvalidResourceException("Invalid resource");
 
                     patientDb.GenderConcept = genderConcept;
@@ -80,19 +78,32 @@ namespace Concept.PatientRecordSystem.Service
                     // TODO: change identifiers from ICollection<> to List<> to have access to add range. 
                     foreach(var identifier in patient.Identifier)
                     {
-                        patientDb.Identifiers.Add(new Persistence.Models.Identifier
+                        patientDb.Identifiers.Add(new()
                         {
                             System = identifier.System,
                             Value = identifier.Value
                         });                      
                     }
 
-                 
-                    // add nameparts
-         
-
+                    var nameTypes = await _context.ConceptSets.Where(c => c.Name == "NameType").Include(cs => cs.Concepts)
+                        .SelectMany(c => c.Concepts).ToListAsync();
                     
+                    var givenNameConceptId = nameTypes.FirstOrDefault(c => c.Value == "Given")?.Id ?? throw new NullReferenceException();
+                    var familyNameConceptId = nameTypes.FirstOrDefault(c => c.Value == "Family")?.Id ?? throw new NullReferenceException();
 
+
+                    // add nameparts
+                    foreach(var name in patient.Name)
+                    {
+                        patientDb.NameParts.Add(
+                        new() { 
+
+                            Value = name.Family, 
+                            Order = 0,
+                            NameTypeConceptId = familyNameConceptId
+                         });
+                    } 
+                    
                 }
 
                 throw new InvalidResourceException("Invalid resource");
