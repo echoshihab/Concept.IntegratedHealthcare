@@ -56,9 +56,16 @@ VALUES
 	('0893a08c-d67d-429e-8e38-d497bc2e9716', 'Other', 'other', 'Other'),
 	('cb679791-ae0b-442a-ba75-6bd94fcf89dd', 'Unknown', 'unknown', 'Unknown');	
 
+
+-- name types
+INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
+VALUES
+	('166daa19-2148-4d4d-991d-f6f9e83203c0', 'Family', 'family', 'Family'),
+	('05646cc6-b67f-4caa-be05-67b3e0bd6fe9', 'Given', 'given', 'Given');
+
  -- Concept Concept Set 
-    INSERT INTO public."ConceptConceptSet"("Id", "ConceptId", "ConceptSetId")
-    VALUES 
+INSERT INTO public."ConceptConceptSet"("Id", "ConceptId", "ConceptSetId")
+VALUES 
     (gen_random_uuid(), '9df86d35-0b98-4392-a4ac-dfb571140e1e', LanguageConceptSet),
     (gen_random_uuid(), '1da84595-42ac-4208-8e13-ce3a7228340b', LanguageConceptSet),
     (gen_random_uuid(),'935debed-1c1c-400b-a717-a352eb0e182c', LanguageConceptSet),
@@ -84,7 +91,10 @@ VALUES
 	(gen_random_uuid(), '8021552e-5980-45b1-bd8d-9b30d57e67e9', GenderConceptSet),
 	(gen_random_uuid(), 'e35e3734-7767-47ae-8f32-a682907f682d', GenderConceptSet),
 	(gen_random_uuid(), '0893a08c-d67d-429e-8e38-d497bc2e9716', GenderConceptSet),
-	(gen_random_uuid(), 'cb679791-ae0b-442a-ba75-6bd94fcf89dd', GenderConceptSet);
+	(gen_random_uuid(), 'cb679791-ae0b-442a-ba75-6bd94fcf89dd', GenderConceptSet),
+	(gen_random_uuid(), '166daa19-2148-4d4d-991d-f6f9e83203c0', NameTypeConceptSet),
+	(gen_random_uuid(), '05646cc6-b67f-4caa-be05-67b3e0bd6fe9', NameTypeConceptSet);
+
 
 END $$;
 
