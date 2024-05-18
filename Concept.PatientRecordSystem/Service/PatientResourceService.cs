@@ -1,5 +1,6 @@
 ﻿using Concept.PatientRecordSystem.Exceptions;
 using Concept.PatientRecordSystem.Persistence;
+using Concept.PatientRecordSystem.Persistence.Models;
 using Firely.Fhir.Packages;
 using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;
@@ -85,25 +86,30 @@ namespace Concept.PatientRecordSystem.Service
                         });                      
                     }
 
+                    // add name
                     var nameTypes = await _context.ConceptSets.Where(c => c.Name == "NameType").Include(cs => cs.Concepts)
                         .SelectMany(c => c.Concepts).ToListAsync();
                     
                     var givenNameConceptId = nameTypes.FirstOrDefault(c => c.Value == "Given")?.Id ?? throw new NullReferenceException();
                     var familyNameConceptId = nameTypes.FirstOrDefault(c => c.Value == "Family")?.Id ?? throw new NullReferenceException();
 
-
-                    // add nameparts
-                    foreach(var name in patient.Name)
+                    // TODO: assess if this is US core compliant
+                    var patientName = patient.Name.FirstOrDefault(c => c.Use == HumanName.NameUse.Official) ?? patient.Name.First();
+                
+                    patientDb.NameParts.Add(new NamePart()
                     {
-                        patientDb.NameParts.Add(
-                        new() { 
+                        Value = patientName.Family,
+                        Order = 0,
+                        NameTypeConceptId = familyNameConceptId
+                    });
 
-                            Value = name.Family, 
-                            Order = 0,
-                            NameTypeConceptId = familyNameConceptId
-                         });
-                    } 
-                    
+                    var givenNames = patientName.Given.Select((c, i) => new NamePart()
+                    {
+                        Value = c,
+                        Order = (short)i,
+                        NameTypeConceptId = givenNameConceptId
+                    });
+                 
                 }
 
                 throw new InvalidResourceException("Invalid resource");
