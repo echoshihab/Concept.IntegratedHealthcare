@@ -113,6 +113,23 @@ namespace Concept.PatientRecordSystem.Service
                             NameTypeConceptId = givenNameConceptId
                         });
                     }
+
+                    // add language
+                    if (patient.Communication.Any())
+                    {
+                        var selectedCommunication = patient.Communication.FirstOrDefault(c => c.Preferred is true) ?? patient.Communication.First();
+
+                        var languageConcept = await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedCommunication.Language.Coding.First(c => c.System == "http://hl7.org/fhir/us/core/ValueSet/simple-language").Code);
+
+                        if (languageConcept != null)
+                        {
+                            patientDb.Languages.Add(new()
+                            {
+                                LanguageConceptId = familyNameConceptId
+                            });
+                        }
+                    }
+                      
                 }
 
                 throw new InvalidResourceException("Invalid resource");
