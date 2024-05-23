@@ -69,9 +69,7 @@ namespace Concept.PatientRecordSystem.Service
                     }
 
                     // retrieve matching gender concept
-                    var genderConcept = await _context.ConceptSets.Where(c => c.Name == "AdministrativeGender").Include(cs => cs.Concepts
-                        .Where(c => c.Value == patient.Gender.ToString())).Select(c => c.Concepts.FirstOrDefault())
-                        .FirstOrDefaultAsync() ?? throw new InvalidResourceException("Invalid resource");
+                    var genderConcept = await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.Gender.ToString()) ?? throw new InvalidResourceException("Invalid resource");
 
                     patientDb.GenderConcept = genderConcept;
                     
@@ -96,20 +94,25 @@ namespace Concept.PatientRecordSystem.Service
                     // TODO: assess if this is US core compliant
                     var patientName = patient.Name.FirstOrDefault(c => c.Use == HumanName.NameUse.Official) ?? patient.Name.First();
                 
-                    patientDb.NameParts.Add(new NamePart()
+                    if (!string.IsNullOrWhiteSpace(patientName.Family))
                     {
-                        Value = patientName.Family,
-                        Order = 0,
-                        NameTypeConceptId = familyNameConceptId
-                    });
-
-                    var givenNames = patientName.Given.Select((c, i) => new NamePart()
+                        patientDb.NameParts.Add(new NamePart()
+                        {
+                            Value = patientName.Family,
+                            Order = 0,
+                            NameTypeConceptId = familyNameConceptId
+                        });
+                    }
+                   
+                    if (patientName.Given.Any())
                     {
-                        Value = c,
-                        Order = (short)i,
-                        NameTypeConceptId = givenNameConceptId
-                    });
-                 
+                        var givenNames = patientName.Given.Select((c, i) => new NamePart()
+                        {
+                            Value = c,
+                            Order = (short)i,
+                            NameTypeConceptId = givenNameConceptId
+                        });
+                    }
                 }
 
                 throw new InvalidResourceException("Invalid resource");
