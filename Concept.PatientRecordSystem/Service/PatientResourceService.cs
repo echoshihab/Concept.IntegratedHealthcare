@@ -7,7 +7,7 @@ using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
-using Microsoft.AspNetCore.Mvc;
+using Hl7.Fhir.Utility;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -129,6 +129,52 @@ namespace Concept.PatientRecordSystem.Service
                             });
                         }
                     }
+
+                    
+                    
+                    var phoneConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "phone"))?.Id ?? throw new NullReferenceException();
+                    var emailConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "email"))?.Id ?? throw new NullReferenceException();
+                    
+
+                    if (!patient.Telecom.IsNullOrEmpty())
+                    {
+                        var phoneTelecom = patient.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Phone);
+                        // 1 is the highest rank https://hl7.org/fhir/R4/datatypes.html#ContactPoint
+                        var selectedPhoneTelecom = phoneTelecom.FirstOrDefault(c => c.Rank == 1) ?? phoneTelecom.FirstOrDefault();
+                        
+                        var emailTelecom = patient.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Email);
+                        var selectedEmailTelecom = emailTelecom.FirstOrDefault(c => c.Rank == 1) ?? emailTelecom.FirstOrDefault();
+
+                        if (selectedPhoneTelecom != null)
+                        {
+                            
+                            var phoneContactPointUse = _context.Concepts.FirstOrDefault(c => c.Value == selectedPhoneTelecom.UseElement.Value.ToString())?.Id;
+                            
+                            patientDb.Telecoms.Add(new()
+                            {
+                                ContactSystemConceptId = phoneConceptId,                                
+                                Value = selectedPhoneTelecom.Value
+                            });
+
+                            // need to make contact point use nullable.
+                        }
+
+                    }
+
+                    // add email
+
+
+                    if (selectedTelecoms.Any())
+                    {
+
+                    }
+
+                        
+                    
+
+                    
+
+
                       
                 }
 
