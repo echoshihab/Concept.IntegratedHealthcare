@@ -128,54 +128,58 @@ namespace Concept.PatientRecordSystem.Service
                                 LanguageConceptId = familyNameConceptId
                             });
                         }
-                    }
-
-                    
+                    }                 
                     
                     var phoneConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "phone"))?.Id ?? throw new NullReferenceException();
                     var emailConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "email"))?.Id ?? throw new NullReferenceException();
                     
-
                     if (!patient.Telecom.IsNullOrEmpty())
                     {
                         var phoneTelecom = patient.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Phone);
                         // 1 is the highest rank https://hl7.org/fhir/R4/datatypes.html#ContactPoint
-                        var selectedPhoneTelecom = phoneTelecom.FirstOrDefault(c => c.Rank == 1) ?? phoneTelecom.FirstOrDefault();
-                        
+                        var selectedPhoneTelecom = phoneTelecom.FirstOrDefault(c => c.Rank == 1) ?? phoneTelecom.FirstOrDefault();                        
+
+                        if (selectedPhoneTelecom != null)
+                        {                                                                                    
+                            var patientDbTelecomPhone = new PatientTelecom()
+                            {
+                                Value = selectedPhoneTelecom.Value
+                            };
+
+                            var phoneContactPointUseId = _context.Concepts.FirstOrDefault(c => c.Value == selectedPhoneTelecom.UseElement.Value.ToString())?.Id;
+
+                            if (phoneContactPointUseId != null)
+                            {
+                                patientDbTelecomPhone.ContactPointUseConceptId = phoneContactPointUseId;
+                            }          
+                            
+                            _context.PatientTelecoms.Add(patientDbTelecomPhone);
+                        }
+
                         var emailTelecom = patient.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Email);
                         var selectedEmailTelecom = emailTelecom.FirstOrDefault(c => c.Rank == 1) ?? emailTelecom.FirstOrDefault();
 
-                        if (selectedPhoneTelecom != null)
+                        if (selectedEmailTelecom != null)
                         {
-                            
-                            var phoneContactPointUse = _context.Concepts.FirstOrDefault(c => c.Value == selectedPhoneTelecom.UseElement.Value.ToString())?.Id;
-                            
-                            patientDb.Telecoms.Add(new()
+                            var patientDbTelecomEmail = new PatientTelecom()
                             {
-                                ContactSystemConceptId = phoneConceptId,                                
-                                Value = selectedPhoneTelecom.Value
-                            });
+                                Value = selectedEmailTelecom.Value
+                            };
 
-                            // need to make contact point use nullable.
+                            var emailContactPointUseId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedEmailTelecom.UseElement.Value.ToString()))?.Id;
+
+                            if (emailContactPointUseId != null)
+                            {
+                                patientDbTelecomEmail.ContactSystemConceptId = (Guid)emailContactPointUseId;
+                            }
                         }
 
-                    }
+                        // fix name type concept
+                        // add address
 
-                    // add email
 
-
-                    if (selectedTelecoms.Any())
-                    {
 
                     }
-
-                        
-                    
-
-                    
-
-
-                      
                 }
 
                 throw new InvalidResourceException("Invalid resource");
