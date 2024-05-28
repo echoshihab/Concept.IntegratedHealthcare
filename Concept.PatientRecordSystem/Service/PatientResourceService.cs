@@ -170,13 +170,14 @@ namespace Concept.PatientRecordSystem.Service
                             }
                         }
 
-                        // fix name type concept
 
                         // add address
 
 
                         // add gender
+                        var genderConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.GenderElement.ToString()))?.Id ?? throw new InvalidResourceException("Invalid resource");
 
+                        patientDb.GenderConceptId = genderConceptId;
 
                     }
                 }
