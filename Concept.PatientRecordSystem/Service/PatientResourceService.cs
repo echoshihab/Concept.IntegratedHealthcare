@@ -115,7 +115,7 @@ namespace Concept.PatientRecordSystem.Service
                     }
 
                     // add language
-                    if (patient.Communication.Any())
+                    if (patient.Communication.Count > 0)
                     {
                         var selectedCommunication = patient.Communication.FirstOrDefault(c => c.Preferred is true) ?? patient.Communication.First();
 
