@@ -82,14 +82,10 @@ namespace Concept.PatientRecordSystem.Service
                             System = identifier.System,
                             Value = identifier.Value
                         });                      
-                    }
-
-                    // add name
-                    var nameTypes = await _context.ConceptSets.Where(c => c.Name == "NameType").Include(cs => cs.Concepts)
-                        .SelectMany(c => c.Concepts).ToListAsync();
+                    }                                      
                     
-                    var givenNameConceptId = nameTypes.FirstOrDefault(c => c.Value == "Given")?.Id ?? throw new NullReferenceException();
-                    var familyNameConceptId = nameTypes.FirstOrDefault(c => c.Value == "Family")?.Id ?? throw new NullReferenceException();
+                    var givenNameConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "Given"))?.Id ?? throw new NullReferenceException();
+                    var familyNameConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "Family"))?.Id ?? throw new NullReferenceException();
 
                     // TODO: assess if this is US core compliant
                     var patientName = patient.Name.FirstOrDefault(c => c.Use == HumanName.NameUse.Official) ?? patient.Name.First();
@@ -175,8 +171,11 @@ namespace Concept.PatientRecordSystem.Service
                         }
 
                         // fix name type concept
+
                         // add address
 
+
+                        // add gender
 
 
                     }
