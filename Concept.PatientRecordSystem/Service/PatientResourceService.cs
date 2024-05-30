@@ -170,15 +170,51 @@ namespace Concept.PatientRecordSystem.Service
                             }
                         }
 
-
                         // add address
+                        if(patient.Address.Count > 0)
+                        {
+                            foreach (var address in patient.Address)
+                            {
+                                var patientDbAddress = new Persistence.Models.Address();
 
+                                if (address.Line.Any())
+                                {
+                                    patientDbAddress.Lines = address.Line.ToList();
+                                }
+
+                                if (address.City != null)
+                                {
+                                    patientDbAddress.City = address.City;
+                                }
+
+                                if (address.State != null)
+                                {
+                                    patientDbAddress.State = address.State;
+                                }
+
+                                if (address.UseElement != null)
+                                {
+                                    var addressUseConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == address.UseElement.Value.ToString()))?.Id;
+                                    
+                                    if (addressUseConceptId != null)
+                                    {
+                                        patientDbAddress.AddressUseConceptId = (Guid)addressUseConceptId;
+                                    }                                    
+                                }
+
+                                if (address.PostalCode != null)
+                                {
+                                    patientDbAddress.PostalCode = address.PostalCode;
+                                }
+                            }
+                        }
 
                         // add gender
                         var genderConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.GenderElement.ToString()))?.Id ?? throw new InvalidResourceException("Invalid resource");
 
                         patientDb.GenderConceptId = genderConceptId;
 
+                        await _context.SaveChangesAsync();
                     }
                 }
 
