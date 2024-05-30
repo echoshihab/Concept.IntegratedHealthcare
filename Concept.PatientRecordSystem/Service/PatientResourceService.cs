@@ -9,6 +9,8 @@ using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
 using Hl7.Fhir.Utility;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Service
@@ -115,13 +117,13 @@ namespace Concept.PatientRecordSystem.Service
                     {
                         var selectedCommunication = patient.Communication.FirstOrDefault(c => c.Preferred is true) ?? patient.Communication.First();
 
-                        var languageConcept = await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedCommunication.Language.Coding.First(c => c.System == "http://hl7.org/fhir/us/core/ValueSet/simple-language").Code);
+                        var languageConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedCommunication.Language.Coding.First(c => c.System == "http://hl7.org/fhir/us/core/ValueSet/simple-language").Code))?.Id;
 
-                        if (languageConcept != null)
+                        if (languageConceptId != null)
                         {
                             patientDb.Languages.Add(new()
                             {
-                                LanguageConceptId = familyNameConceptId
+                                LanguageConceptId = (Guid)languageConceptId
                             });
                         }
                     }                 
@@ -142,7 +144,7 @@ namespace Concept.PatientRecordSystem.Service
                                 Value = selectedPhoneTelecom.Value
                             };
 
-                            var phoneContactPointUseId = _context.Concepts.FirstOrDefault(c => c.Value == selectedPhoneTelecom.UseElement.Value.ToString())?.Id;
+                            var phoneContactPointUseId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedPhoneTelecom.UseElement.Value.ToString()))?.Id;
 
                             if (phoneContactPointUseId != null)
                             {
