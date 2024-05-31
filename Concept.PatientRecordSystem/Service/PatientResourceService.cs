@@ -117,8 +117,9 @@ namespace Concept.PatientRecordSystem.Service
                     if (patient.Communication.Count > 0)
                     {
                         var selectedCommunication = patient.Communication.FirstOrDefault(c => c.Preferred is true) ?? patient.Communication.First();
+                        var languageCoding = selectedCommunication.Language.Coding.First(c => c.System == "http://hl7.org/fhir/us/core/ValueSet/simple-language")?.Code;
 
-                        var languageConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedCommunication.Language.Coding.First(c => c.System == "http://hl7.org/fhir/us/core/ValueSet/simple-language").Code))?.Id;
+                        var languageConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == languageCoding))?.Id;
 
                         if (languageConceptId != null)
                         {
@@ -218,7 +219,7 @@ namespace Concept.PatientRecordSystem.Service
                         }
 
                         // add gender
-                        var genderConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.GenderElement.ToString()))?.Id ?? throw new InvalidResourceException("Invalid resource");
+                        var genderConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.GenderElement.Value.ToString()))?.Id ?? throw new InvalidResourceException("Invalid resource");
 
                         patientDb.GenderConceptId = genderConceptId;
 

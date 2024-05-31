@@ -8,7 +8,7 @@ Content-Type: application/json
   "identifier": [
     {
       "system": "http://example.com/identifiers/mrn",
-      "value": "123456"
+      "value": "553456"
     }
   ],
   "name": [
@@ -24,13 +24,28 @@ Content-Type: application/json
   "telecom": [
     {
       "system": "phone",
-      "value": "555-1234",
+      "value": "219-555-1234",
       "use": "home"
     },
     {
       "system": "email",
       "value": "edgar.poe@example.com",
       "use": "home"
+    }
+  ],
+ "communication": [
+    {
+      "language": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/us/core/ValueSet/simple-language",
+            "code": "en",
+            "display": "English"
+          }
+        ],
+        "text": "English"
+      },
+      "preferred": true
     }
   ],
   "gender": "male",
