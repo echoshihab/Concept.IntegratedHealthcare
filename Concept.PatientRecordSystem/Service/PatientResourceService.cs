@@ -51,11 +51,10 @@ namespace Concept.PatientRecordSystem.Service
 
                 if (result.Success)
                 {
-                    // map first
-                    // then context save changes all resources in same class - this means this class
-                    // worry about other stuff later 
+
                     var patientDb = new Persistence.Models.Patient();
 
+                    // add birthdate
                     var birthDateArray = patient.BirthDate.Split('-');
 
                     patientDb.BirthYear = ushort.Parse(birthDateArray[0]);
@@ -70,13 +69,12 @@ namespace Concept.PatientRecordSystem.Service
                         patientDb.BirthDay = ushort.Parse(birthDateArray[2]);
                     }
 
-                    // retrieve matching gender concept
+                    // add gender
                     var genderConcept = await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.Gender.ToString()) ?? throw new InvalidResourceException("Invalid resource");
 
                     patientDb.GenderConcept = genderConcept;
                     
-                    // add identifier 
-                    // TODO: change identifiers from ICollection<> to List<> to have access to add range. 
+                    // add identifier                    
                     foreach(var identifier in patient.Identifier)
                     {
                         patientDb.Identifiers.Add(new()
@@ -84,12 +82,15 @@ namespace Concept.PatientRecordSystem.Service
                             System = identifier.System,
                             Value = identifier.Value
                         });                      
-                    }                                      
+                    }            
+                    
+
+                    // add name
                     
                     var givenNameConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "Given"))?.Id ?? throw new NullReferenceException();
                     var familyNameConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "Family"))?.Id ?? throw new NullReferenceException();
 
-                    // TODO: assess if this is US core compliant
+      
                     var patientName = patient.Name.FirstOrDefault(c => c.Use == HumanName.NameUse.Official) ?? patient.Name.First();
                 
                     if (!string.IsNullOrWhiteSpace(patientName.Family))
@@ -207,6 +208,11 @@ namespace Concept.PatientRecordSystem.Service
                                 if (address.PostalCode != null)
                                 {
                                     patientDbAddress.PostalCode = address.PostalCode;
+                                }
+
+                                if (address.Country != null)
+                                {
+                                    patientDbAddress.Country = address.Country;
                                 }
                             }
                         }
