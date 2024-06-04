@@ -4,6 +4,6 @@ namespace Concept.PatientRecordSystem.Factory
 {
     public interface IResourceServiceFactory
     {
-        IResourceService<Persistence.Models.IdentifiedData> GetResourceService(string resourceType);
+        IResourceService<Hl7.Fhir.Model.Resource> GetResourceService(string resourceType);
     }
 }

@@ -8,13 +8,16 @@ namespace Concept.PatientRecordSystem.Factory
     public class ResourceServiceFactory : IResourceServiceFactory
     {
         private readonly ApplicationDbContext _context;
-        public ResourceServiceFactory(ApplicationDbContext context)
+        private readonly IResourceService<Hl7.Fhir.Model.Patient> _patientResourceService;
+
+        public ResourceServiceFactory(ApplicationDbContext context, IResourceService<Hl7.Fhir.Model.Patient> patientResourceService)
         {
             this._context = context;
+            _patientResourceService = patientResourceService;
         }
-        public IResourceService<IdentifiedData> GetResourceService(string resourceType) => resourceType.ToUpper() switch
+        public IResourceService<Hl7.Fhir.Model.Resource> GetResourceService(string resourceType) => resourceType.ToUpper() switch
         {
-            ApplicationConstants.PATIENT => new PatientResourceService(_context),
+            ApplicationConstants.PATIENT => (IResourceService <Hl7.Fhir.Model.Resource>) _patientResourceService,
             _ => throw new NotSupportedException("Resource type not supported")
         };
     }
