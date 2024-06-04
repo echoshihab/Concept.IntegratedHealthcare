@@ -9,13 +9,11 @@ using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
 using Hl7.Fhir.Utility;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Service
 {
-    public class PatientResourceService : IResourceService<Persistence.Models.IdentifiedData>
+    public class PatientResourceService : ResourcePersistenceServiceBase<Hl7.Fhir.Model.Patient>
     {
         private readonly ApplicationDbContext _context;
 
@@ -23,7 +21,7 @@ namespace Concept.PatientRecordSystem.Service
         {
             _context = context;
         }
-        public async Task<Persistence.Models.IdentifiedData> CreateAsync(JsonDocument fhirResource)
+        public override async Task<Hl7.Fhir.Model.Patient> CreateAsync(JsonDocument fhirResource)
         {
             var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector);
 
@@ -49,185 +47,190 @@ namespace Concept.PatientRecordSystem.Service
 
                 var result = validator.Validate(patient, ApplicationConstants.PatientUSCoreProfile);
 
-                if (result.Success)
+                if (!result.Success)
                 {
+                    throw new InvalidResourceException("Invalid Resource");
+                }
 
-                    var patientDb = new Persistence.Models.Patient();
+                var patientDb = new Persistence.Models.Patient();
 
-                    // add birthdate
-                    var birthDateArray = patient.BirthDate.Split('-');
+                // add birthdate
+                var birthDateArray = patient.BirthDate.Split('-');
 
-                    patientDb.BirthYear = ushort.Parse(birthDateArray[0]);
+                patientDb.BirthYear = ushort.Parse(birthDateArray[0]);
 
-                    if (birthDateArray.Length > 0)
-                    {
-                        patientDb.BirthMonth = ushort.Parse(birthDateArray[1]);
-                    } 
+                if (birthDateArray.Length > 0)
+                {
+                    patientDb.BirthMonth = ushort.Parse(birthDateArray[1]);
+                } 
 
-                    if (birthDateArray.Length > 1)
-                    {
-                        patientDb.BirthDay = ushort.Parse(birthDateArray[2]);
-                    }
+                if (birthDateArray.Length > 1)
+                {
+                    patientDb.BirthDay = ushort.Parse(birthDateArray[2]);
+                }
 
-                    // add gender
-                    var genderConcept = await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.Gender.ToString()) ?? throw new InvalidResourceException("Invalid resource");
+                // add gender
+                var genderConcept = await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.Gender.ToString()) ?? throw new InvalidResourceException("Invalid resource");
 
-                    patientDb.GenderConcept = genderConcept;
+                patientDb.GenderConcept = genderConcept;
                     
-                    // add identifier                    
-                    foreach(var identifier in patient.Identifier)
+                // add identifier                    
+                foreach(var identifier in patient.Identifier)
+                {
+                    patientDb.Identifiers.Add(new()
                     {
-                        patientDb.Identifiers.Add(new()
-                        {
-                            System = identifier.System,
-                            Value = identifier.Value
-                        });                      
-                    }            
+                        System = identifier.System,
+                        Value = identifier.Value
+                    });                      
+                }            
                     
-
-                    // add name
-                    
-                    var givenNameConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "Given"))?.Id ?? throw new NullReferenceException();
-                    var familyNameConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "Family"))?.Id ?? throw new NullReferenceException();
+                // add name                   
+                var givenNameConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "Given"))?.Id ?? throw new NullReferenceException();
+                var familyNameConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "Family"))?.Id ?? throw new NullReferenceException();
 
       
-                    var patientName = patient.Name.FirstOrDefault(c => c.Use == HumanName.NameUse.Official) ?? patient.Name.First();
+                var patientName = patient.Name.FirstOrDefault(c => c.Use == HumanName.NameUse.Official) ?? patient.Name.First();
                 
-                    if (!string.IsNullOrWhiteSpace(patientName.Family))
+                if (!string.IsNullOrWhiteSpace(patientName.Family))
+                {
+                    patientDb.NameParts.Add(new NamePart()
                     {
-                        patientDb.NameParts.Add(new NamePart()
-                        {
-                            Value = patientName.Family,
-                            Order = 0,
-                            NameTypeConceptId = familyNameConceptId
-                        });
-                    }
+                        Value = patientName.Family,
+                        Order = 0,
+                        NameTypeConceptId = familyNameConceptId
+                    });
+                }
                    
-                    if (patientName.Given.Any())
+                if (patientName.Given.Any())
+                {
+                    var givenNames = patientName.Given.Select((c, i) => new NamePart()
                     {
-                        var givenNames = patientName.Given.Select((c, i) => new NamePart()
+                        Value = c,
+                        Order = (short)i,
+                        NameTypeConceptId = givenNameConceptId
+                    });
+                }
+
+                // add language
+                if (patient.Communication.Count > 0)
+                {
+                    var selectedCommunication = patient.Communication.FirstOrDefault(c => c.Preferred is true) ?? patient.Communication.First();
+                    var languageCoding = selectedCommunication.Language.Coding.First(c => c.System == "http://hl7.org/fhir/us/core/ValueSet/simple-language")?.Code;
+
+                    var languageConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == languageCoding))?.Id;
+
+                    if (languageConceptId != null)
+                    {
+                        patientDb.Languages.Add(new()
                         {
-                            Value = c,
-                            Order = (short)i,
-                            NameTypeConceptId = givenNameConceptId
+                            LanguageConceptId = (Guid)languageConceptId
                         });
                     }
+                }                 
+                    
+                var phoneConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "phone"))?.Id ?? throw new NullReferenceException();
+                var emailConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "email"))?.Id ?? throw new NullReferenceException();
+                    
+                if (!patient.Telecom.IsNullOrEmpty())
+                {
+                    var phoneTelecom = patient.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Phone);
+                    // 1 is the highest rank https://hl7.org/fhir/R4/datatypes.html#ContactPoint
+                    var selectedPhoneTelecom = phoneTelecom.FirstOrDefault(c => c.Rank == 1) ?? phoneTelecom.FirstOrDefault();                        
 
-                    // add language
-                    if (patient.Communication.Count > 0)
-                    {
-                        var selectedCommunication = patient.Communication.FirstOrDefault(c => c.Preferred is true) ?? patient.Communication.First();
-                        var languageCoding = selectedCommunication.Language.Coding.First(c => c.System == "http://hl7.org/fhir/us/core/ValueSet/simple-language")?.Code;
-
-                        var languageConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == languageCoding))?.Id;
-
-                        if (languageConceptId != null)
+                    if (selectedPhoneTelecom != null)
+                    {                                                                                    
+                        var patientDbTelecomPhone = new PatientTelecom()
                         {
-                            patientDb.Languages.Add(new()
-                            {
-                                LanguageConceptId = (Guid)languageConceptId
-                            });
-                        }
-                    }                 
-                    
-                    var phoneConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "phone"))?.Id ?? throw new NullReferenceException();
-                    var emailConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "email"))?.Id ?? throw new NullReferenceException();
-                    
-                    if (!patient.Telecom.IsNullOrEmpty())
-                    {
-                        var phoneTelecom = patient.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Phone);
-                        // 1 is the highest rank https://hl7.org/fhir/R4/datatypes.html#ContactPoint
-                        var selectedPhoneTelecom = phoneTelecom.FirstOrDefault(c => c.Rank == 1) ?? phoneTelecom.FirstOrDefault();                        
+                            Value = selectedPhoneTelecom.Value,
+                            ContactSystemConceptId = phoneConceptId
+                        };
 
-                        if (selectedPhoneTelecom != null)
-                        {                                                                                    
-                            var patientDbTelecomPhone = new PatientTelecom()
-                            {
-                                Value = selectedPhoneTelecom.Value
-                            };
+                        var phoneContactPointUseId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedPhoneTelecom.UseElement.Value.ToString()))?.Id;
 
-                            var phoneContactPointUseId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedPhoneTelecom.UseElement.Value.ToString()))?.Id;
-
-                            if (phoneContactPointUseId != null)
-                            {
-                                patientDbTelecomPhone.ContactPointUseConceptId = phoneContactPointUseId;
-                            }          
+                        if (phoneContactPointUseId != null)
+                        {
+                            patientDbTelecomPhone.ContactPointUseConceptId = phoneContactPointUseId;
+                        }          
                             
-                            _context.PatientTelecoms.Add(patientDbTelecomPhone);
-                        }
+                        patientDb.Telecoms.Add(patientDbTelecomPhone);
+                    }
 
-                        var emailTelecom = patient.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Email);
-                        var selectedEmailTelecom = emailTelecom.FirstOrDefault(c => c.Rank == 1) ?? emailTelecom.FirstOrDefault();
+                    var emailTelecom = patient.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Email);
+                    var selectedEmailTelecom = emailTelecom.FirstOrDefault(c => c.Rank == 1) ?? emailTelecom.FirstOrDefault();
 
-                        if (selectedEmailTelecom != null)
+                    if (selectedEmailTelecom != null)
+                    {
+                        var patientDbTelecomEmail = new PatientTelecom()
                         {
-                            var patientDbTelecomEmail = new PatientTelecom()
-                            {
-                                Value = selectedEmailTelecom.Value
-                            };
+                            Value = selectedEmailTelecom.Value,
+                            ContactSystemConceptId = emailConceptId
+                        };
 
-                            var emailContactPointUseId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedEmailTelecom.UseElement.Value.ToString()))?.Id;
+                        var emailContactPointUseId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedEmailTelecom.UseElement.Value.ToString()))?.Id;
 
-                            if (emailContactPointUseId != null)
-                            {
-                                patientDbTelecomEmail.ContactSystemConceptId = (Guid)emailContactPointUseId;
-                            }
-                        }
-
-                        // add address
-                        if(patient.Address.Count > 0)
+                        if (emailContactPointUseId != null)
                         {
-                            foreach (var address in patient.Address)
-                            {
-                                var patientDbAddress = new Persistence.Models.Address();
-
-                                if (address.Line.Any())
-                                {
-                                    patientDbAddress.Lines = address.Line.ToList();
-                                }
-
-                                if (address.City != null)
-                                {
-                                    patientDbAddress.City = address.City;
-                                }
-
-                                if (address.State != null)
-                                {
-                                    patientDbAddress.State = address.State;
-                                }
-
-                                if (address.UseElement != null)
-                                {
-                                    var addressUseConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == address.UseElement.Value.ToString()))?.Id;
-                                    
-                                    if (addressUseConceptId != null)
-                                    {
-                                        patientDbAddress.AddressUseConceptId = (Guid)addressUseConceptId;
-                                    }                                    
-                                }
-
-                                if (address.PostalCode != null)
-                                {
-                                    patientDbAddress.PostalCode = address.PostalCode;
-                                }
-
-                                if (address.Country != null)
-                                {
-                                    patientDbAddress.Country = address.Country;
-                                }
-                            }
+                            patientDbTelecomEmail.ContactSystemConceptId = (Guid)emailContactPointUseId;
                         }
 
-                        // add gender
-                        var genderConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.GenderElement.Value.ToString()))?.Id ?? throw new InvalidResourceException("Invalid resource");
-
-                        patientDb.GenderConceptId = genderConceptId;
-
-                        await _context.SaveChangesAsync();
+                        patientDb.Telecoms.Add(patientDbTelecomEmail);
                     }
                 }
 
-                throw new InvalidResourceException("Invalid resource");
+                // add address
+                if (patient.Address.Count > 0)
+                {
+                    foreach (var address in patient.Address)
+                    {
+                        var patientDbAddress = new Persistence.Models.Address();
+
+                        if (address.Line.Any())
+                        {
+                            patientDbAddress.Lines = address.Line.ToList();
+                        }
+
+                        if (address.City != null)
+                        {
+                            patientDbAddress.City = address.City;
+                        }
+
+                        if (address.State != null)
+                        {
+                            patientDbAddress.State = address.State;
+                        }
+
+                        if (address.UseElement != null)
+                        {
+                            var addressUseConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == address.UseElement.Value.ToString()))?.Id;
+                                    
+                            if (addressUseConceptId != null)
+                            {
+                                patientDbAddress.AddressUseConceptId = (Guid)addressUseConceptId;
+                            }                                    
+                        }
+
+                        if (address.PostalCode != null)
+                        {
+                            patientDbAddress.PostalCode = address.PostalCode;
+                        }
+
+                        if (address.Country != null)
+                        {
+                            patientDbAddress.Country = address.Country;
+                        }
+                    }
+                }
+
+                    // add gender
+                var genderConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.GenderElement.Value.ToString()))?.Id ?? throw new InvalidResourceException("Invalid resource");
+
+                patientDb.GenderConceptId = genderConceptId;
+
+                _context.Patients.Add(patientDb);
+
+                await _context.SaveChangesAsync();        
+                    
+                return patient;                
             }
             catch (DeserializationFailedException e)
             {
