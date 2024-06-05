@@ -1,9 +1,6 @@
 ﻿using Hl7.Fhir.Model;
-using Hl7.Fhir.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.Extensions.Options;
-using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Binder
 {
