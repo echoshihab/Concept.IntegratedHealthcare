@@ -1,6 +1,6 @@
+using Concept.PatientRecordSystem.Factory;
+using Concept.PatientRecordSystem.Service;
 using Hl7.Fhir.Model;
-using Hl7.Fhir.Serialization;
-using Hl7.Fhir.Validation;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -8,63 +8,41 @@ namespace Concept.PatientRecordSystem.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PatientController : ControllerBase
+    public class PatientController : FhirControllerBase<Patient>
     {
-
-        private readonly ILogger<PatientController> _logger;
-
-        public PatientController(ILogger<PatientController> logger)
+        
+        public PatientController(IResourceService<Patient> patientResourceService) : base(patientResourceService)
         {
-            _logger = logger;
+          
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreatePatientAsync(JsonDocument patientPayload)
+        public override Task<IActionResult> CreateAsync(Patient resource)
         {
-            var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector);
-
-            try
-            {
-                var patient = JsonSerializer.Deserialize<Patient>(patientPayload, options) ?? throw new ArgumentNullException();
-            }
-            catch (DeserializationFailedException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            await System.Threading.Tasks.Task.FromResult(true);
-
-
-            return new ObjectResult(new OperationOutcome
-            {
-                Text = new Narrative
-                {
-                    Status = Narrative.NarrativeStatus.Generated,
-                    Div = "<div xmlns=\"http://www.w3.org/1999/xhtml\">The operation was successful</div>"
-                }
-
-            })
-            { StatusCode = StatusCodes.Status201Created };
+            return base.CreateAsync(resource);
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> CreateResourceAsync(JsonDocument fhirResourcePayload)
+        //{
+        //    var rawText = fhirResourcePayload.RootElement.GetRawText() ?? throw new ArgumentNullException();
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPatientAsync(string id)
-        {
-            var patient = new Patient { Id = id, Active = true, BirthDate = "4", };
-            try
-            {
-                patient.Validate(recurse: true, narrativeValidation: NarrativeValidationKind.FhirXhtml);
-            }
+        //    var fhirResource = JsonSerializer.Deserialize<JsonElement>(rawText);
 
-            catch (Exception e)
-            {
-                Console.WriteLine($"{e.Message}");
-            }
+        //    string resourceType = fhirResource.GetProperty(nameof(resourceType)).ToString();
 
+        //    var resourceService = _resourceServiceFactory.GetResourceService(resourceType);
 
-            await System.Threading.Tasks.Task.FromResult(true);
-            return Ok();
-        }
+        //    await resourceService.CreateAsync(fhirResourcePayload);
+
+        //    return new ObjectResult(new OperationOutcome
+        //        {
+        //            Text = new Narrative
+        //            {
+        //                Status = Narrative.NarrativeStatus.Generated,
+        //                Div = $"<div xmlns=\"http://www.w3.org/1999/xhtml\">The operation was successful with {resourceType}</div>"
+        //            }
+        //        })
+        //        { StatusCode = StatusCodes.Status201Created };
+        //}
     }
 }

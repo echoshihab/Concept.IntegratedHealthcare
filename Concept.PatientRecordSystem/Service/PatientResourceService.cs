@@ -13,22 +13,16 @@ using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Service
 {
-    public class PatientResourceService : ResourcePersistenceServiceBase<Hl7.Fhir.Model.Patient>
+    public class PatientResourceService(ApplicationDbContext context) : ResourcePersistenceServiceBase<Hl7.Fhir.Model.Patient>
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context = context;
 
-        public PatientResourceService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-        public override async Task<Hl7.Fhir.Model.Patient> CreateAsync(JsonDocument fhirResource)
+        public override async Task<Hl7.Fhir.Model.Patient> CreateAsync(Hl7.Fhir.Model.Patient patient)
         {
             var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector);
 
             try
-            {
-                var patient = JsonSerializer.Deserialize<Hl7.Fhir.Model.Patient>(fhirResource, options) ?? throw new ArgumentNullException();
-
+            {               
                 var resolver = new FhirPackageSource(ModelInfo.ModelInspector, "https://packages.simplifier.net",
                      new[] { "hl7.fhir.r4.core" }
                );

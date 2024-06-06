@@ -5,7 +5,7 @@ namespace Concept.PatientRecordSystem.Service
 {
     public abstract class ResourcePersistenceServiceBase<TResource> : IResourceService<TResource> where TResource : Resource
     {
-        public virtual Task<TResource> CreateAsync(JsonDocument fhirResource)
+        public virtual Task<TResource> CreateAsync(TResource fhirResource)
         {
             throw new NotImplementedException();
         }
