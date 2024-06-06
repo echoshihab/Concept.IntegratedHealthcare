@@ -1,8 +1,6 @@
-using Concept.PatientRecordSystem.Factory;
 using Concept.PatientRecordSystem.Service;
 using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Controllers
 {

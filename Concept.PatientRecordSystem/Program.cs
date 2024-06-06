@@ -1,6 +1,5 @@
 using Concept.PatientRecordSystem.Binder;
 using Concept.PatientRecordSystem.Exceptions;
-using Concept.PatientRecordSystem.Factory;
 using Concept.PatientRecordSystem.Persistence;
 using Concept.PatientRecordSystem.Service;
 using Microsoft.AspNetCore.Diagnostics;

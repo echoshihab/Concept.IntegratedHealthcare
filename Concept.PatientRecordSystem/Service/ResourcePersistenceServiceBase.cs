@@ -1,5 +1,4 @@
 ﻿using Hl7.Fhir.Model;
-using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Service
 {

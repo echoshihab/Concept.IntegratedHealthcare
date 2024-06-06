@@ -1,6 +1,4 @@
-﻿using Concept.PatientRecordSystem.Persistence.Models;
-using Hl7.Fhir.Model;
-using System.Text.Json;
+﻿using Hl7.Fhir.Model;
 
 namespace Concept.PatientRecordSystem.Service
 {
