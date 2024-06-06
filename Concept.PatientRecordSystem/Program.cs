@@ -15,7 +15,6 @@ builder.Services.AddControllers(options =>
     options.ModelBinderProviders.Insert(0, new FhirResourceModelBinderProvider());
 });
 
-builder.Services.AddScoped<IResourceServiceFactory, ResourceServiceFactory>();
 builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Patient>, PatientResourceService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
