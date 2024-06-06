@@ -10,7 +10,7 @@ namespace Concept.PatientRecordSystem.Binder
         {
             ArgumentNullException.ThrowIfNull(context);
 
-            if (context.Metadata.ModelType == typeof(Resource))
+            if (context.Metadata.ModelType.BaseType == typeof(DomainResource))
             {
                 return new BinderTypeModelBinder(typeof(FhirResourceBinder));                
             }
