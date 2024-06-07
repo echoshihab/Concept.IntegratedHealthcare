@@ -5,7 +5,7 @@ namespace Concept.PatientRecordSystem.Service
 {
     public abstract class ResourcePersistenceServiceBase<TResource> : IResourceService<TResource> where TResource : Resource
     {
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         public ResourcePersistenceServiceBase(ApplicationDbContext context)
         {
