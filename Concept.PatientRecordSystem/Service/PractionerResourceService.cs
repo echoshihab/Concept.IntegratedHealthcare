@@ -4,13 +4,10 @@ using Concept.PatientRecordSystem.Persistence.Models;
 using Firely.Fhir.Packages;
 using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;
-using Hl7.Fhir.Serialization;
 using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
 using Hl7.Fhir.Utility;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
-using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Service
 {
@@ -50,8 +47,15 @@ namespace Concept.PatientRecordSystem.Service
 
                 var practitionerDb = new Persistence.Models.Practitioner();
 
-                // add identifier                    
-                foreach (var identifier in practitioner.Identifier)
+                // add identifier                                    
+                var validIdentifiers = practitioner.Identifier.Where(c => c.System == "http://hl7.org/fhir/sid/us-npi");
+
+                if (!validIdentifiers.Any())
+                {
+                    throw new InvalidResourceException("Invalid Resource");
+                }
+
+                foreach (var identifier in validIdentifiers)
                 {
                     practitionerDb.Identifiers.Add(new()
                     {
@@ -142,21 +146,21 @@ namespace Concept.PatientRecordSystem.Service
                 {
                     foreach (var address in practitioner.Address)
                     {
-                        var patientDbAddress = new Persistence.Models.Address();
+                        var PractitionerDbAddress = new Persistence.Models.Address();
 
                         if (address.Line.Any())
                         {
-                            patientDbAddress.Lines = address.Line.ToList();
+                            PractitionerDbAddress.Lines = address.Line.ToList();
                         }
 
                         if (address.City != null)
                         {
-                            patientDbAddress.City = address.City;
+                            PractitionerDbAddress.City = address.City;
                         }
 
                         if (address.State != null)
                         {
-                            patientDbAddress.State = address.State;
+                            PractitionerDbAddress.State = address.State;
                         }
 
                         if (address.UseElement != null)
@@ -165,19 +169,26 @@ namespace Concept.PatientRecordSystem.Service
 
                             if (addressUseConceptId != null)
                             {
-                                patientDbAddress.AddressUseConceptId = (Guid)addressUseConceptId;
+                                PractitionerDbAddress.AddressUseConceptId = (Guid)addressUseConceptId;
                             }
                         }
 
                         if (address.PostalCode != null)
                         {
-                            patientDbAddress.PostalCode = address.PostalCode;
+                            PractitionerDbAddress.PostalCode = address.PostalCode;
                         }
 
                         if (address.Country != null)
                         {
-                            patientDbAddress.Country = address.Country;
+                            PractitionerDbAddress.Country = address.Country;
                         }
+
+                        //_context.Practitioners.Add(practitionerDb);
+
+                        //await _context.SaveChangesAsync();
+
+                        return practitioner;
+
                     }
                 }
             } 
