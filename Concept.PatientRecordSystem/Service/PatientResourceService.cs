@@ -9,7 +9,6 @@ using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
 using Hl7.Fhir.Utility;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace Concept.PatientRecordSystem.Service
 {

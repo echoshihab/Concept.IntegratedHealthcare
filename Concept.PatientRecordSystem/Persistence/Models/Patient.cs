@@ -1,6 +1,4 @@
-﻿using Hl7.Fhir.Model;
-
-namespace Concept.PatientRecordSystem.Persistence.Models
+﻿namespace Concept.PatientRecordSystem.Persistence.Models
 {
     public class Patient : IdentifiedData
     {
