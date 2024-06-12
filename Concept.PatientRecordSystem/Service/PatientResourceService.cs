@@ -47,6 +47,7 @@ namespace Concept.PatientRecordSystem.Service
                 }
 
                 var patientDb = new Persistence.Models.Patient();
+               
 
                 // add birthdate
                 var birthDateArray = patient.BirthDate.Split('-');
@@ -71,7 +72,7 @@ namespace Concept.PatientRecordSystem.Service
                 // add identifier                    
                 foreach(var identifier in patient.Identifier)
                 {
-                    patientDb.Identifiers.Add(new()
+                    patientDb.Individual.Identifiers.Add(new()
                     {
                         System = identifier.System,
                         Value = identifier.Value
@@ -87,7 +88,7 @@ namespace Concept.PatientRecordSystem.Service
                 
                 if (!string.IsNullOrWhiteSpace(patientName.Family))
                 {
-                    patientDb.NameParts.Add(new NamePart()
+                    patientDb.Individual.NameParts.Add(new NamePart()
                     {
                         Value = patientName.Family,
                         Order = 0,
@@ -212,7 +213,10 @@ namespace Concept.PatientRecordSystem.Service
                         {
                             patientDbAddress.Country = address.Country;
                         }
+
+                        patientDb.Individual.Addresses.Add(patientDbAddress);
                     }
+
                 }
 
                     // add gender
