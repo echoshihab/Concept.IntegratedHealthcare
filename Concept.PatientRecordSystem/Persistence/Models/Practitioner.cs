@@ -1,17 +1,16 @@
 ﻿namespace Concept.PatientRecordSystem.Persistence.Models
 {
-    public class Practitioner
+    public class Practitioner : IdentifiedData
     {
         public Practitioner()
         {
-            Identifiers = [];
-            NameParts = [];
             Addresses = [];
             Telecoms = [];
         }
-        public List<Identifier> Identifiers { get; set; }
-        public List<NamePart> NameParts { get; set; }
+
+        public Guid IndividualId { get; set; }
+        public Individual Individual { get; set; } = null!;
         public List<Address> Addresses { get; set; }        
-        public List<PractitionerTelecom> Telecoms { get; set; }
+        public List<PractitionerTelecom> Telecoms { get; set; }        
     }
 }

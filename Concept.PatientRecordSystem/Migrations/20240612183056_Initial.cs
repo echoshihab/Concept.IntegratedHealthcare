@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Concept.PatientRecordSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,6 @@ namespace Concept.PatientRecordSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    IdentifierId = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -37,19 +36,6 @@ namespace Concept.PatientRecordSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Concepts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Patients",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    GenderConceptId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Patients", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,30 +64,19 @@ namespace Concept.PatientRecordSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Addresses",
+                name: "Individuals",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    PatientId = table.Column<Guid>(type: "uuid", nullable: false),
-                    AddressUseConceptId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Lines = table.Column<List<string>>(type: "text[]", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: true),
-                    State = table.Column<string>(type: "text", nullable: true),
-                    PostalCode = table.Column<string>(type: "text", nullable: true)
+                    IndividualTypeConceptId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.PrimaryKey("PK_Individuals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Addresses_Concepts_AddressUseConceptId",
-                        column: x => x.AddressUseConceptId,
+                        name: "FK_Individuals_Concepts_IndividualTypeConceptId",
+                        column: x => x.IndividualTypeConceptId,
                         principalTable: "Concepts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Addresses_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -111,17 +86,17 @@ namespace Concept.PatientRecordSystem.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    PatientId = table.Column<Guid>(type: "uuid", nullable: false),
                     System = table.Column<string>(type: "text", nullable: true),
-                    Value = table.Column<string>(type: "text", nullable: false)
+                    Value = table.Column<string>(type: "text", nullable: false),
+                    IndividualId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Identifier", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Identifier_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
+                        name: "FK_Identifier_Individuals_IndividualId",
+                        column: x => x.IndividualId,
+                        principalTable: "Individuals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -134,15 +109,61 @@ namespace Concept.PatientRecordSystem.Migrations
                     Value = table.Column<string>(type: "text", nullable: true),
                     Order = table.Column<short>(type: "smallint", nullable: false),
                     NameTypeConceptId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PatientId = table.Column<Guid>(type: "uuid", nullable: false)
+                    IndividualId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_NameParts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_NameParts_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
+                        name: "FK_NameParts_Individuals_IndividualId",
+                        column: x => x.IndividualId,
+                        principalTable: "Individuals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    GenderConceptId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BirthYear = table.Column<int>(type: "integer", nullable: false),
+                    BirthMonth = table.Column<int>(type: "integer", nullable: false),
+                    BirthDay = table.Column<int>(type: "integer", nullable: false),
+                    IndividualId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Patients_Concepts_GenderConceptId",
+                        column: x => x.GenderConceptId,
+                        principalTable: "Concepts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Patients_Individuals_IndividualId",
+                        column: x => x.IndividualId,
+                        principalTable: "Individuals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Practitioners",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IndividualId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Practitioners", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Practitioners_Individuals_IndividualId",
+                        column: x => x.IndividualId,
+                        principalTable: "Individuals",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -178,9 +199,9 @@ namespace Concept.PatientRecordSystem.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ContactSystemConceptId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ContactPointUseConceptId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ContactPointUseConceptId = table.Column<Guid>(type: "uuid", nullable: true),
                     PatientId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: true)
+                    Value = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,8 +210,7 @@ namespace Concept.PatientRecordSystem.Migrations
                         name: "FK_PatientTelecoms_Concepts_ContactPointUseConceptId",
                         column: x => x.ContactPointUseConceptId,
                         principalTable: "Concepts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PatientTelecoms_Concepts_ContactSystemConceptId",
                         column: x => x.ContactSystemConceptId,
@@ -205,15 +225,87 @@ namespace Concept.PatientRecordSystem.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IndividualId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AddressUseConceptId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Lines = table.Column<List<string>>(type: "text[]", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: true),
+                    Country = table.Column<string>(type: "text", nullable: true),
+                    State = table.Column<string>(type: "text", nullable: true),
+                    PostalCode = table.Column<string>(type: "text", nullable: true),
+                    PractitionerId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Concepts_AddressUseConceptId",
+                        column: x => x.AddressUseConceptId,
+                        principalTable: "Concepts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Addresses_Individuals_IndividualId",
+                        column: x => x.IndividualId,
+                        principalTable: "Individuals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Practitioners_PractitionerId",
+                        column: x => x.PractitionerId,
+                        principalTable: "Practitioners",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PractitionerTelecoms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ContactSystemConceptId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ContactPointUseConceptId = table.Column<Guid>(type: "uuid", nullable: true),
+                    PractitionerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PractitionerTelecoms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PractitionerTelecoms_Concepts_ContactPointUseConceptId",
+                        column: x => x.ContactPointUseConceptId,
+                        principalTable: "Concepts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PractitionerTelecoms_Concepts_ContactSystemConceptId",
+                        column: x => x.ContactSystemConceptId,
+                        principalTable: "Concepts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PractitionerTelecoms_Practitioners_PractitionerId",
+                        column: x => x.PractitionerId,
+                        principalTable: "Practitioners",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_AddressUseConceptId",
                 table: "Addresses",
                 column: "AddressUseConceptId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Addresses_PatientId",
+                name: "IX_Addresses_IndividualId",
                 table: "Addresses",
-                column: "PatientId");
+                column: "IndividualId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_PractitionerId",
+                table: "Addresses",
+                column: "PractitionerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ConceptConceptSet_ConceptId",
@@ -226,14 +318,19 @@ namespace Concept.PatientRecordSystem.Migrations
                 column: "ConceptSetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Identifier_PatientId",
+                name: "IX_Identifier_IndividualId",
                 table: "Identifier",
-                column: "PatientId");
+                column: "IndividualId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NameParts_PatientId",
+                name: "IX_Individuals_IndividualTypeConceptId",
+                table: "Individuals",
+                column: "IndividualTypeConceptId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NameParts_IndividualId",
                 table: "NameParts",
-                column: "PatientId");
+                column: "IndividualId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PatientLanguages_LanguageConceptId",
@@ -259,6 +356,36 @@ namespace Concept.PatientRecordSystem.Migrations
                 name: "IX_PatientTelecoms_PatientId",
                 table: "PatientTelecoms",
                 column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_GenderConceptId",
+                table: "Patients",
+                column: "GenderConceptId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_IndividualId",
+                table: "Patients",
+                column: "IndividualId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PractitionerTelecoms_ContactPointUseConceptId",
+                table: "PractitionerTelecoms",
+                column: "ContactPointUseConceptId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PractitionerTelecoms_ContactSystemConceptId",
+                table: "PractitionerTelecoms",
+                column: "ContactSystemConceptId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PractitionerTelecoms_PractitionerId",
+                table: "PractitionerTelecoms",
+                column: "PractitionerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Practitioners_IndividualId",
+                table: "Practitioners",
+                column: "IndividualId");
         }
 
         /// <inheritdoc />
@@ -283,13 +410,22 @@ namespace Concept.PatientRecordSystem.Migrations
                 name: "PatientTelecoms");
 
             migrationBuilder.DropTable(
+                name: "PractitionerTelecoms");
+
+            migrationBuilder.DropTable(
                 name: "ConceptSets");
 
             migrationBuilder.DropTable(
-                name: "Concepts");
+                name: "Patients");
 
             migrationBuilder.DropTable(
-                name: "Patients");
+                name: "Practitioners");
+
+            migrationBuilder.DropTable(
+                name: "Individuals");
+
+            migrationBuilder.DropTable(
+                name: "Concepts");
         }
     }
 }

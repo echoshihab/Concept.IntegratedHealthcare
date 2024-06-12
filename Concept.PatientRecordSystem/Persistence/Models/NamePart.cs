@@ -5,9 +5,8 @@
         public string? Value { get; set; }
         public short Order { get; set; }
         public Guid NameTypeConceptId { get; set; }
-        public Guid PatientId { get; set; }
-
-        public Patient Patient { get; set; } = null!;
+        public Guid IndividualId { get; set; }
+        public Individual Individual { get; set; } = null!;
     }
 }
 

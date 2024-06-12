@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Concept.PatientRecordSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240528195058_ChangeAddressUseConceptToNullable")]
-    partial class ChangeAddressUseConceptToNullable
+    [Migration("20240612183056_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,15 +38,21 @@ namespace Concept.PatientRecordSystem.Migrations
                     b.Property<string>("City")
                         .HasColumnType("text");
 
+                    b.Property<string>("Country")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("IndividualId")
+                        .HasColumnType("uuid");
+
                     b.Property<List<string>>("Lines")
                         .IsRequired()
                         .HasColumnType("text[]");
 
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("PostalCode")
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("PractitionerId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("State")
                         .HasColumnType("text");
@@ -55,7 +61,9 @@ namespace Concept.PatientRecordSystem.Migrations
 
                     b.HasIndex("AddressUseConceptId");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("IndividualId");
+
+                    b.HasIndex("PractitionerId");
 
                     b.ToTable("Addresses");
                 });
@@ -122,7 +130,7 @@ namespace Concept.PatientRecordSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("PatientId")
+                    b.Property<Guid>("IndividualId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("System")
@@ -134,9 +142,25 @@ namespace Concept.PatientRecordSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("IndividualId");
 
                     b.ToTable("Identifier");
+                });
+
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Individual", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("IndividualTypeConceptId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IndividualTypeConceptId");
+
+                    b.ToTable("Individuals");
                 });
 
             modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.NamePart", b =>
@@ -145,21 +169,21 @@ namespace Concept.PatientRecordSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("IndividualId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("NameTypeConceptId")
                         .HasColumnType("uuid");
 
                     b.Property<short>("Order")
                         .HasColumnType("smallint");
 
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Value")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("IndividualId");
 
                     b.ToTable("NameParts");
                 });
@@ -182,9 +206,14 @@ namespace Concept.PatientRecordSystem.Migrations
                     b.Property<Guid>("GenderConceptId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("IndividualId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GenderConceptId");
+
+                    b.HasIndex("IndividualId");
 
                     b.ToTable("Patients");
                 });
@@ -240,21 +269,71 @@ namespace Concept.PatientRecordSystem.Migrations
                     b.ToTable("PatientTelecoms");
                 });
 
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Practitioner", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("IndividualId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IndividualId");
+
+                    b.ToTable("Practitioners");
+                });
+
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.PractitionerTelecom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ContactPointUseConceptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ContactSystemConceptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PractitionerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContactPointUseConceptId");
+
+                    b.HasIndex("ContactSystemConceptId");
+
+                    b.HasIndex("PractitionerId");
+
+                    b.ToTable("PractitionerTelecoms");
+                });
+
             modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Address", b =>
                 {
                     b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Concept", "AddressUseConcept")
                         .WithMany()
                         .HasForeignKey("AddressUseConceptId");
 
-                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Patient", "Patient")
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Individual", "Individual")
                         .WithMany("Addresses")
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("IndividualId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Practitioner", null)
+                        .WithMany("Addresses")
+                        .HasForeignKey("PractitionerId");
+
                     b.Navigation("AddressUseConcept");
 
-                    b.Navigation("Patient");
+                    b.Navigation("Individual");
                 });
 
             modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.ConceptConceptSet", b =>
@@ -278,24 +357,35 @@ namespace Concept.PatientRecordSystem.Migrations
 
             modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Identifier", b =>
                 {
-                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Patient", "Patient")
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Individual", "Individual")
                         .WithMany("Identifiers")
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("IndividualId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Patient");
+                    b.Navigation("Individual");
+                });
+
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Individual", b =>
+                {
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Concept", "IndividualTypeConcept")
+                        .WithMany()
+                        .HasForeignKey("IndividualTypeConceptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IndividualTypeConcept");
                 });
 
             modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.NamePart", b =>
                 {
-                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Patient", "Patient")
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Individual", "Individual")
                         .WithMany("NameParts")
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("IndividualId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Patient");
+                    b.Navigation("Individual");
                 });
 
             modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Patient", b =>
@@ -306,7 +396,15 @@ namespace Concept.PatientRecordSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Individual", "Individual")
+                        .WithMany()
+                        .HasForeignKey("IndividualId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("GenderConcept");
+
+                    b.Navigation("Individual");
                 });
 
             modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.PatientLanguage", b =>
@@ -353,6 +451,42 @@ namespace Concept.PatientRecordSystem.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Practitioner", b =>
+                {
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Individual", "Individual")
+                        .WithMany()
+                        .HasForeignKey("IndividualId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Individual");
+                });
+
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.PractitionerTelecom", b =>
+                {
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Concept", "ContactPointUseConcept")
+                        .WithMany()
+                        .HasForeignKey("ContactPointUseConceptId");
+
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Concept", "ContactSystemConcept")
+                        .WithMany()
+                        .HasForeignKey("ContactSystemConceptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Concept.PatientRecordSystem.Persistence.Models.Practitioner", "Practitioner")
+                        .WithMany("Telecoms")
+                        .HasForeignKey("PractitionerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ContactPointUseConcept");
+
+                    b.Navigation("ContactSystemConcept");
+
+                    b.Navigation("Practitioner");
+                });
+
             modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Concept", b =>
                 {
                     b.Navigation("ConceptConceptSets");
@@ -363,15 +497,25 @@ namespace Concept.PatientRecordSystem.Migrations
                     b.Navigation("ConceptConceptSets");
                 });
 
-            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Patient", b =>
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Individual", b =>
                 {
                     b.Navigation("Addresses");
 
                     b.Navigation("Identifiers");
 
+                    b.Navigation("NameParts");
+                });
+
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Patient", b =>
+                {
                     b.Navigation("Languages");
 
-                    b.Navigation("NameParts");
+                    b.Navigation("Telecoms");
+                });
+
+            modelBuilder.Entity("Concept.PatientRecordSystem.Persistence.Models.Practitioner", b =>
+                {
+                    b.Navigation("Addresses");
 
                     b.Navigation("Telecoms");
                 });

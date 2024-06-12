@@ -5,7 +5,6 @@
         public string Name { get; set; } = null!;
         public List<Concept> Concepts { get; set; } = [];
         public List<ConceptConceptSet> ConceptConceptSets { get; set; } = [];
-
     }
 
 }
