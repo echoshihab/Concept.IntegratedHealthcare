@@ -18,7 +18,7 @@ VALUES
 		( NameTypeConceptSet,'NameType'), 
 		( ContactSystemConceptSet,'ContactSystem'), 
 		( ContactPointUseConceptSet,'ContactPointUse'),
-		( GenderConceptSet, 'AdministrativeGender')
+		( GenderConceptSet, 'AdministrativeGender'),
 		( IndividualTypeConceptSet, 'IndividualType');
 
 -- language concepts
