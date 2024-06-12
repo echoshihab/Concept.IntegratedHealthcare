@@ -6,6 +6,7 @@ DECLARE
 	ContactSystemConceptSet UUID := '19325dc3-3a65-4c1b-a475-e54ab519dab3';
 	ContactPointUseConceptSet UUID := '9df86d35-0b98-4392-a4ac-dfb571140e1e';
 	GenderConceptSet UUID := 'a21c2487-a6b3-4e48-8f3a-5b32543b4411';
+	IndividualTypeConceptSet UUID := '6cef0e74-82af-4734-93f1-5b08a9d9e64b';
 
 BEGIN
 
@@ -17,7 +18,8 @@ VALUES
 		( NameTypeConceptSet,'NameType'), 
 		( ContactSystemConceptSet,'ContactSystem'), 
 		( ContactPointUseConceptSet,'ContactPointUse'),
-		( GenderConceptSet, 'AdministrativeGender');
+		( GenderConceptSet, 'AdministrativeGender')
+		( IndividualTypeConceptSet, 'IndividualType');
 
 -- language concepts
 INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
@@ -63,6 +65,12 @@ VALUES
 	('166daa19-2148-4d4d-991d-f6f9e83203c0', 'Family', 'family', 'Family'),
 	('05646cc6-b67f-4caa-be05-67b3e0bd6fe9', 'Given', 'given', 'Given');
 
+-- Individual type concepts
+INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
+VALUES 
+	('0582e424-c9c0-4e6b-a922-0dd16fb68aea', 'patient', 'patient', 'Patient'),
+	('4297af86-e72d-4768-89c6-dfb9af9f84d0', 'practitioner', 'practitioner', 'Practitioner');
+
  -- Concept Concept Set 
 INSERT INTO public."ConceptConceptSet"("Id", "ConceptId", "ConceptSetId")
 VALUES 
@@ -93,7 +101,9 @@ VALUES
 	(gen_random_uuid(), '0893a08c-d67d-429e-8e38-d497bc2e9716', GenderConceptSet),
 	(gen_random_uuid(), 'cb679791-ae0b-442a-ba75-6bd94fcf89dd', GenderConceptSet),
 	(gen_random_uuid(), '166daa19-2148-4d4d-991d-f6f9e83203c0', NameTypeConceptSet),
-	(gen_random_uuid(), '05646cc6-b67f-4caa-be05-67b3e0bd6fe9', NameTypeConceptSet);
+	(gen_random_uuid(), '05646cc6-b67f-4caa-be05-67b3e0bd6fe9', NameTypeConceptSet),
+	(gen_random_uuid(),'0582e424-c9c0-4e6b-a922-0dd16fb68aea', IndividualTypeConceptSet),
+	(gen_random_uuid(),'4297af86-e72d-4768-89c6-dfb9af9f84d0', IndividualTypeConceptSet);
 
 
 END $$;
