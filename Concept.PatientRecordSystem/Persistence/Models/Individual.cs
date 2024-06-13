@@ -4,15 +4,15 @@
     {
         public Individual()
         {
-            this.Identifiers = new List<Identifier>();
-            this.Addresses = new List<Address>();
-            this.NameParts = new List<NamePart>();         
+            this.Identifiers = [];
+            this.Addresses = [];
+            this.NameParts = [];
         }
 
         public Guid IndividualTypeConceptId { get; set; }
-        public ICollection<Identifier> Identifiers { get; set; }
-        public ICollection<NamePart> NameParts { get; set; }
-        public ICollection<Address> Addresses { get; set; }        
+        public List<Identifier> Identifiers { get; set; }
+        public List<NamePart> NameParts { get; set; }
+        public List<Address> Addresses { get; set; }        
         public Concept IndividualTypeConcept { get; set; } = null!;
     }
 }

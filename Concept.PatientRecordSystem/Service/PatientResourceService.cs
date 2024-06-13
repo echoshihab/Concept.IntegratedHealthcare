@@ -106,6 +106,8 @@ namespace Concept.PatientRecordSystem.Service
                         Order = (short)i,
                         NameTypeConceptId = givenNameConceptId
                     });
+
+                    patientDbIndividual.NameParts.AddRange(givenNames);
                 }
 
                 // add language
