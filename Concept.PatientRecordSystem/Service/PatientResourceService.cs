@@ -69,10 +69,12 @@ namespace Concept.PatientRecordSystem.Service
 
                 patientDb.GenderConcept = genderConcept;
                     
+                var patientDbIndividual = new Individual();
+
                 // add identifier                    
                 foreach(var identifier in patient.Identifier)
                 {
-                    patientDb.Individual.Identifiers.Add(new()
+                    patientDbIndividual.Identifiers.Add(new()
                     {
                         System = identifier.System,
                         Value = identifier.Value
@@ -88,7 +90,7 @@ namespace Concept.PatientRecordSystem.Service
                 
                 if (!string.IsNullOrWhiteSpace(patientName.Family))
                 {
-                    patientDb.Individual.NameParts.Add(new NamePart()
+                    patientDbIndividual.NameParts.Add(new NamePart()
                     {
                         Value = patientName.Family,
                         Order = 0,
@@ -214,7 +216,7 @@ namespace Concept.PatientRecordSystem.Service
                             patientDbAddress.Country = address.Country;
                         }
 
-                        patientDb.Individual.Addresses.Add(patientDbAddress);
+                        patientDbIndividual.Addresses.Add(patientDbAddress);
                     }
 
                 }
@@ -223,6 +225,13 @@ namespace Concept.PatientRecordSystem.Service
                 var genderConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.GenderElement.Value.ToString()))?.Id ?? throw new InvalidResourceException("Invalid resource");
 
                 patientDb.GenderConceptId = genderConceptId;
+                
+                // add individual type
+                var individualTypeId= (await base._context.Concepts.FirstOrDefaultAsync(c => c.Value == "patient"))?.Id ?? throw new NullReferenceException();
+
+                patientDbIndividual.IndividualTypeConceptId = individualTypeId;
+
+                patientDb.Individual = patientDbIndividual;
 
                 _context.Patients.Add(patientDb);
 
