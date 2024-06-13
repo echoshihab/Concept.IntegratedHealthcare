@@ -73,7 +73,9 @@ namespace Concept.PatientRecordSystem.Service
                     throw new InvalidResourceException("Invalid resource");
                 }
                
-                practitionerDb.Individual.NameParts.Add(new NamePart()
+                var practitionerDbIndividual = new Individual();
+
+                practitionerDbIndividual.NameParts.Add(new NamePart()
                 {
                     Value = practitionerName.Family,
                     Order = 0,
@@ -88,6 +90,8 @@ namespace Concept.PatientRecordSystem.Service
                         Order = (short)i,
                         NameTypeConceptId = givenNameConceptId
                     });
+
+                    practitionerDbIndividual.NameParts.AddRange(givenNames);
                 }
 
                 var phoneConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == "phone"))?.Id ?? throw new NullReferenceException();
@@ -182,9 +186,10 @@ namespace Concept.PatientRecordSystem.Service
                             PractitionerDbAddress.Country = address.Country;
                         }
 
-                        practitionerDb.Addresses.Add(PractitionerDbAddress);
+                        practitionerDbIndividual.Addresses.Add(PractitionerDbAddress);
                     }
                     
+                    practitionerDb.Individual = practitionerDbIndividual;
                     this._context.Practitioners.Add(practitionerDb);                    
                 }
 
