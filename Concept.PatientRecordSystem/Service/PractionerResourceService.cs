@@ -18,9 +18,8 @@ namespace Concept.PatientRecordSystem.Service
             
         }
 
-        public async Task<Hl7.Fhir.Model.Practitioner> CreateAsync(Hl7.Fhir.Model.Practitioner practitioner)
-        {
-           
+        public override async Task<Hl7.Fhir.Model.Practitioner> CreateAsync(Hl7.Fhir.Model.Practitioner practitioner)
+        {           
             try
             {
                 var resolver = new FhirPackageSource(ModelInfo.ModelInspector, "https://packages.simplifier.net",
@@ -57,7 +56,7 @@ namespace Concept.PatientRecordSystem.Service
 
                 foreach (var identifier in validIdentifiers)
                 {
-                    practitionerDb.Identifiers.Add(new()
+                    practitionerDb.Individual.Identifiers.Add(new()
                     {
                         System = identifier.System,
                         Value = identifier.Value
@@ -74,7 +73,7 @@ namespace Concept.PatientRecordSystem.Service
                     throw new InvalidResourceException("Invalid resource");
                 }
                
-                practitionerDb.NameParts.Add(new NamePart()
+                practitionerDb.Individual.NameParts.Add(new NamePart()
                 {
                     Value = practitionerName.Family,
                     Order = 0,
@@ -183,18 +182,20 @@ namespace Concept.PatientRecordSystem.Service
                             PractitionerDbAddress.Country = address.Country;
                         }
 
-                        //_context.Practitioners.Add(practitionerDb);
-
-                        //await _context.SaveChangesAsync();
-
-                        return practitioner;
-
+                        practitionerDb.Addresses.Add(PractitionerDbAddress);
                     }
+                    
+                    this._context.Practitioners.Add(practitionerDb);                    
                 }
-            } 
+
+                await _context.SaveChangesAsync();
+
+                return practitioner;
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                throw;
             }
         }
     }
