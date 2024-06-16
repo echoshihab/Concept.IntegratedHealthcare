@@ -142,6 +142,27 @@ namespace Concept.PatientRecordSystem.Service
 
                         practitionerDb.Telecoms.Add(practitionerDbTelecomEmail);
                     }
+
+                    var faxTelecom = practitioner.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Fax);
+                    var selectedFaxTelecom = faxTelecom.First(c => c.Rank == 1) ?? faxTelecom.FirstOrDefault();
+
+                    if (selectedFaxTelecom != null)
+                    {
+                        var practitionerDbTelecomFax = new PractitionerTelecom()
+                        {
+                            Value = selectedFaxTelecom.Value,
+                            ContactSystemConceptId = faxConceptId
+                        };
+
+                        var faxContactPointUseId = (await this._context.Concepts.FirstOrDefaultAsync(c => c.Value == selectedFaxTelecom.UseElement.Value.ToString()))?.Id;
+
+                        if (faxContactPointUseId != null)
+                        {
+                            practitionerDbTelecomFax.ContactSystemConceptId = (Guid)faxContactPointUseId;
+                        }
+
+                        practitionerDb.Telecoms.Add(practitionerDbTelecomFax);
+                    }
                 }
 
                 // add address
