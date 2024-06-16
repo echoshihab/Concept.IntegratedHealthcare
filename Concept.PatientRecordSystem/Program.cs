@@ -15,6 +15,7 @@ builder.Services.AddControllers(options =>
 });
 
 builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Patient>, PatientResourceService>();
+builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Practitioner>, PractionerResourceService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 

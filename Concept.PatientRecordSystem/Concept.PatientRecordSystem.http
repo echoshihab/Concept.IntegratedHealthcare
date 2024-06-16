@@ -79,8 +79,8 @@ Content-Type: application/json
   "id": "41f8b542-9879-4f4f-8a6f-071c938fd3ef",
   "identifier": [
     {
-      "system": "http://example.com/identifiers/hospital-id",
-      "value": "987654"
+      "system": "http://hl7.org/fhir/sid/us-npi",
+      "value": "1942902853"
     }
   ],
   "name": [
