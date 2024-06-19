@@ -16,6 +16,7 @@
         public Individual Individual { get; set; } = null!;
         public ICollection<PatientLanguage> Languages { get; set; }
         public ICollection<PatientTelecom> Telecoms { get; set; }
+        public ICollection<PatientPractitioner> PatientPractitioners { get; set; }
         public Concept GenderConcept { get;set;}        
     }
 }

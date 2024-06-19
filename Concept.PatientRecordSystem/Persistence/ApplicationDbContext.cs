@@ -19,11 +19,16 @@ namespace Concept.PatientRecordSystem.Persistence
             modelBuilder.Entity<Practitioner>()
                 .HasOne(p => p.Individual);
 
-
             // Patient & Gender
             modelBuilder.Entity<Patient>()
                 .HasOne(p => p.GenderConcept);
 
+            // Patient and Patient Practitioner
+            modelBuilder.Entity<Patient>()
+                .HasMany(p => p.PatientPractitioners)
+                .WithOne(p => p.Patient)
+                .HasForeignKey(p => p.PatientId);
+               
             // Individual and Identifier
             modelBuilder.Entity<Individual>()
                 .HasMany(i => i.Identifiers)
@@ -51,6 +56,8 @@ namespace Concept.PatientRecordSystem.Persistence
                 .HasMany(p => p.Languages)
                 .WithOne(l => l.Patient)
                 .HasForeignKey(l => l.PatientId);
+
+            // Patient and 
                 
             // Patient and telecommunication
             modelBuilder.Entity<Patient>()
@@ -89,7 +96,8 @@ namespace Concept.PatientRecordSystem.Persistence
         public DbSet<PatientLanguage> PatientLanguages { get; set; }
         public DbSet<PatientTelecom> PatientTelecoms { get; set; }
         public DbSet<PractitionerTelecom> PractitionerTelecoms { get; set; }
-        public DbSet<Individual> Individuals { get; set; }
+        public DbSet<Individual> Individuals { get; set; }       
+        public DbSet<PatientPractitioner> PatientPractitioners { get; set; }
 
     }
 }
