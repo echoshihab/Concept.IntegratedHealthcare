@@ -7,6 +7,7 @@ DECLARE
 	ContactPointUseConceptSet UUID := '9df86d35-0b98-4392-a4ac-dfb571140e1e';
 	GenderConceptSet UUID := 'a21c2487-a6b3-4e48-8f3a-5b32543b4411';
 	IndividualTypeConceptSet UUID := '6cef0e74-82af-4734-93f1-5b08a9d9e64b';
+	PractitionerReferenceTypeConceptSet UUID := '0f15cfcb-d17f-421a-9f52-615cbc7e8030';
 
 BEGIN
 
@@ -19,7 +20,9 @@ VALUES
 		( ContactSystemConceptSet,'ContactSystem'), 
 		( ContactPointUseConceptSet,'ContactPointUse'),
 		( GenderConceptSet, 'AdministrativeGender'),
-		( IndividualTypeConceptSet, 'IndividualType');
+		( IndividualTypeConceptSet, 'IndividualType'),
+		( PractitionerReferenceTypeConceptSet, 'PractitionerReferenceType');
+
 
 -- language concepts
 INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
@@ -58,12 +61,18 @@ VALUES
 	('0893a08c-d67d-429e-8e38-d497bc2e9716', 'Other', 'other', 'Other'),
 	('cb679791-ae0b-442a-ba75-6bd94fcf89dd', 'Unknown', 'unknown', 'Unknown');	
 
-
 -- name types
 INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
 VALUES
 	('166daa19-2148-4d4d-991d-f6f9e83203c0', 'Family', 'family', 'Family'),
 	('05646cc6-b67f-4caa-be05-67b3e0bd6fe9', 'Given', 'given', 'Given');
+
+-- Practioner reference types
+INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
+VALUES
+	('80ad8e8f-34c3-42bb-84d8-c59db8348bf7', 'Organization', 'organization', 'Organization'),
+	('77f1f45b-861f-4183-9f4f-e8529e45b38f', 'Practitioner', 'practitioner', 'Practitioner'),
+	('6b40d73f-5a20-4de3-9ef0-60bfab08d31e', 'PractitionerRole', 'practitionerRole', 'PractitionerRole');
 
 -- Individual type concepts
 INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
@@ -103,9 +112,11 @@ VALUES
 	(gen_random_uuid(), '166daa19-2148-4d4d-991d-f6f9e83203c0', NameTypeConceptSet),
 	(gen_random_uuid(), '05646cc6-b67f-4caa-be05-67b3e0bd6fe9', NameTypeConceptSet),
 	(gen_random_uuid(),'0582e424-c9c0-4e6b-a922-0dd16fb68aea', IndividualTypeConceptSet),
-	(gen_random_uuid(),'4297af86-e72d-4768-89c6-dfb9af9f84d0', IndividualTypeConceptSet);
+	(gen_random_uuid(),'4297af86-e72d-4768-89c6-dfb9af9f84d0', IndividualTypeConceptSet),
+	(gen_random_uuid(),'80ad8e8f-34c3-42bb-84d8-c59db8348bf7', PractitionerReferenceTypeConceptSet),
+	(gen_random_uuid(),'77f1f45b-861f-4183-9f4f-e8529e45b38f', PractitionerReferenceTypeConceptSet),
+	(gen_random_uuid(),'6b40d73f-5a20-4de3-9ef0-60bfab08d31e', PractitionerReferenceTypeConceptSet);
 
 
 END $$;
-
 
