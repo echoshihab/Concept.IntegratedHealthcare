@@ -235,6 +235,35 @@ namespace Concept.PatientRecordSystem.Service
 
                 patientDb.Individual = patientDbIndividual;
 
+                // add practitioner (continue here)
+                if (patient.GeneralPractitioner.Count > 0)
+                {
+                    var references = patient.GeneralPractitioner.Select(c => c.Reference);
+
+                    foreach ( var reference in references)
+                    {
+                        if (reference.StartsWith("Practitioner/"))
+                        {
+                           //get practitioner reference type concept id
+                            var practitionerReferenceTypeId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Code == "Practitioner"))?.Id ?? throw new NullReferenceException();                            
+
+                            _ = Guid.TryParse(reference.Split('/')[1], out var practitionerId);
+                          
+                            var practitioner = await _context.Practitioners.FindAsync(practitionerId);
+                            
+                            if (practitioner != null)
+                            {
+                                patientDb.PatientPractitioners.Add(
+                                    new PatientPractitioner()
+                                    {
+                                        PractitionerReferenceTypeId = practitionerReferenceTypeId,
+                                        PractitionerReferenceId = practitioner.Id
+                                    });                                                               
+                            }                            
+                        }
+                    }
+                }
+
                 _context.Patients.Add(patientDb);
 
                 await _context.SaveChangesAsync();        
