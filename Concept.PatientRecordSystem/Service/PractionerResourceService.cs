@@ -214,8 +214,7 @@ namespace Concept.PatientRecordSystem.Service
                         }
 
                         practitionerDbIndividual.Addresses.Add(PractitionerDbAddress);
-                    }
-                   
+                    }                  
                 }
 
                 practitionerDb.Individual = practitionerDbIndividual;

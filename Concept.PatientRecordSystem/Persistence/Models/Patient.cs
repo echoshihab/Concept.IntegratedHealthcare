@@ -6,6 +6,7 @@
         {        
             this.Languages = new HashSet<PatientLanguage>();
             this.Telecoms = new HashSet<PatientTelecom>();
+            this.PatientPractitioners = new HashSet<PatientPractitioner>();
         }
 
         public Guid GenderConceptId { get; set; }
@@ -17,6 +18,6 @@
         public ICollection<PatientLanguage> Languages { get; set; }
         public ICollection<PatientTelecom> Telecoms { get; set; }
         public ICollection<PatientPractitioner> PatientPractitioners { get; set; }
-        public Concept GenderConcept { get;set;}        
+        public Concept GenderConcept { get;set;} = null!;
     }
 }

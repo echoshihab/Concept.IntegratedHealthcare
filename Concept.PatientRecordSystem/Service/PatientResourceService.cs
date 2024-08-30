@@ -245,7 +245,7 @@ namespace Concept.PatientRecordSystem.Service
                         if (reference.StartsWith("Practitioner/"))
                         {
                            //get practitioner reference type concept id
-                            var practitionerReferenceTypeId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Code == "Practitioner"))?.Id ?? throw new NullReferenceException();                            
+                            var practitionerReferenceTypeId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Code == "practitioner"))?.Id ?? throw new NullReferenceException();                            
 
                             _ = Guid.TryParse(reference.Split('/')[1], out var practitionerId);
                           
@@ -256,11 +256,14 @@ namespace Concept.PatientRecordSystem.Service
                                 patientDb.PatientPractitioners.Add(
                                     new PatientPractitioner()
                                     {
-                                        PractitionerReferenceTypeId = practitionerReferenceTypeId,
+                                        PractitionerReferenceTypeConceptId = practitionerReferenceTypeId,
                                         PractitionerReferenceId = practitioner.Id
                                     });                                                               
                             }                            
                         }
+
+                        // TODO
+                        // handle other types of references such as organization and role
                     }
                 }
 
