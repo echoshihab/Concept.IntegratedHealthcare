@@ -47,24 +47,10 @@ namespace Concept.PatientRecordSystem.Service
                 var practitionerDb = new Persistence.Models.Practitioner();
 
                 // add identifier                                    
-                var validIdentifiers = practitioner.Identifier.Where(c => c.System == "http://hl7.org/fhir/sid/us-npi");
-
-                if (!validIdentifiers.Any())
-                {
-                    throw new InvalidResourceException("Invalid Resource");
-                }
-
-                foreach (var identifier in validIdentifiers)
-                {
-                    practitionerDb.Individual.Identifiers.Add(new()
-                    {
-                        System = identifier.System,
-                        Value = identifier.Value
-                    });
-                }
+              
 
                 var givenNameConceptId = (await base._context.Concepts.FirstOrDefaultAsync(c => c.Value == "Given"))?.Id ?? throw new NullReferenceException();
-                var familyNameConceptId = (await base._context.Concepts.FirstOrDefaultAsync(c => c.Value == "Family"))?.Id ?? throw new NullReferenceException();
+                var familyNameConceptId = (await base._context.Concepts.FirstOrDefaultAsync(c => c.Value == "Family"))?.Id ?? throw new NullReferenceException();                
 
                 var practitionerName = practitioner.Name.FirstOrDefault(c => c.Use == HumanName.NameUse.Official) ?? practitioner.Name.First();
                 
@@ -74,6 +60,26 @@ namespace Concept.PatientRecordSystem.Service
                 }
                
                 var practitionerDbIndividual = new Individual();
+
+                var individualTypeConceptId = (await base._context.Concepts.FirstOrDefaultAsync(c => c.Value == nameof(Persistence.Models.Practitioner)))?.Id ?? throw new NullReferenceException();
+
+                practitionerDbIndividual.IndividualTypeConceptId = individualTypeConceptId;
+
+                var validIdentifiers = practitioner.Identifier.Where(c => c.System == "http://hl7.org/fhir/sid/us-npi");
+
+                if (!validIdentifiers.Any())
+                {
+                    throw new InvalidResourceException("Invalid Resource");
+                }
+
+                foreach (var identifier in validIdentifiers)
+                {
+                    practitionerDbIndividual.Identifiers.Add(new()
+                    {
+                        System = identifier.System,
+                        Value = identifier.Value
+                    });
+                }
 
                 practitionerDbIndividual.NameParts.Add(new NamePart()
                 {
@@ -144,7 +150,7 @@ namespace Concept.PatientRecordSystem.Service
                     }
 
                     var faxTelecom = practitioner.Telecom.Where(c => c.System == ContactPoint.ContactPointSystem.Fax);
-                    var selectedFaxTelecom = faxTelecom.First(c => c.Rank == 1) ?? faxTelecom.FirstOrDefault();
+                    var selectedFaxTelecom = faxTelecom.FirstOrDefault(c => c.Rank == 1) ?? faxTelecom.FirstOrDefault();
 
                     if (selectedFaxTelecom != null)
                     {
@@ -209,10 +215,12 @@ namespace Concept.PatientRecordSystem.Service
 
                         practitionerDbIndividual.Addresses.Add(PractitionerDbAddress);
                     }
-                    
-                    practitionerDb.Individual = practitionerDbIndividual;
-                    this._context.Practitioners.Add(practitionerDb);                    
+                   
                 }
+
+                practitionerDb.Individual = practitionerDbIndividual;
+
+                this._context.Practitioners.Add(practitionerDb);
 
                 await _context.SaveChangesAsync();
 
