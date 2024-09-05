@@ -84,7 +84,11 @@ namespace Concept.PatientRecordSystem.Persistence
             // Patient language and language concept
             modelBuilder.Entity<PatientLanguage>()
                 .HasOne(l => l.LanguageConcept);
-                         
+
+            // Procedure Detail
+            modelBuilder.Entity<ProcedureDetail>()
+                .Property(p => p.Id)
+                .HasDefaultValueSql("gen_random_uuid()");        
         }
 
         public DbSet<Address> Addresses { get; set; }
@@ -98,6 +102,7 @@ namespace Concept.PatientRecordSystem.Persistence
         public DbSet<PractitionerTelecom> PractitionerTelecoms { get; set; }
         public DbSet<Individual> Individuals { get; set; }       
         public DbSet<PatientPractitioner> PatientPractitioners { get; set; }
-
+        public DbSet<ProcedureDetail> ProcedureDetails { get; set; }
+        public DbSet<ServiceRequest> ServiceRequests { get; set; }
     }
 }
