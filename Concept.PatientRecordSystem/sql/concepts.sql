@@ -8,6 +8,9 @@ DECLARE
 	GenderConceptSet UUID := 'a21c2487-a6b3-4e48-8f3a-5b32543b4411';
 	IndividualTypeConceptSet UUID := '6cef0e74-82af-4734-93f1-5b08a9d9e64b';
 	PractitionerReferenceTypeConceptSet UUID := '0f15cfcb-d17f-421a-9f52-615cbc7e8030';
+	StatusConceptSet UUID := 'c2f94e02-3b69-4f5d-9254-7bf15d488e4e';
+    IntentConceptSet UUID := '6c2c5b4f-9c62-4c3f-b64c-780546c1a5a7';
+
 
 BEGIN
 
@@ -22,6 +25,8 @@ VALUES
 		( GenderConceptSet, 'AdministrativeGender'),
 		( IndividualTypeConceptSet, 'IndividualType'),
 		( PractitionerReferenceTypeConceptSet, 'PractitionerReferenceType');
+		( StatusConceptSet, 'Status'),
+        ( IntentConceptSet, 'Intent');
 
 
 -- language concepts
@@ -80,6 +85,30 @@ VALUES
 	('0582e424-c9c0-4e6b-a922-0dd16fb68aea', 'patient', 'patient', 'Patient'),
 	('4297af86-e72d-4768-89c6-dfb9af9f84d0', 'practitioner', 'practitioner', 'Practitioner');
 
+-- Insert Status Concepts with hardcoded UUIDs
+INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
+VALUES 
+    ('dfeab3cc-3d73-4d93-89a4-5db9753e1f9f', 'draft', 'draft', 'Draft'),
+    ('946b7d3c-9c12-4bb8-9d3a-8f5b7e78d2f3', 'active', 'active', 'Active'),
+    ('72ef2b5e-8e25-473a-a78c-d3120f4c913a', 'on-hold', 'on-hold', 'On Hold'),
+    ('a5b3e865-3c0b-4a4e-9b39-bdd8ff6c0cf7', 'revoked', 'revoked', 'Revoked'),
+    ('0cdd69f5-4b9b-403e-b8cb-d6a5af5f8203', 'completed', 'completed', 'Completed'),
+    ('3a7958b4-8a4d-4d5b-8ff4-d78c8ab07e53', 'entered-in-error', 'entered-in-error', 'Entered In Error'),
+    ('28d51738-3a60-4a4e-8f5b-d61e5c7c1a79', 'unknown', 'unknown', 'Unknown');
+
+-- Insert Intent Concepts with hardcoded UUIDs
+INSERT INTO public."Concepts"("Id", "Value", "Code", "Display")
+VALUES 
+    ('bc1f6a17-4a4e-4f5b-9b39-c67f68c6d3f4', 'proposal', 'proposal', 'Proposal'),
+    ('26e5a784-8a6b-4f8b-9f5b-7e5f3a6b789a', 'plan', 'plan', 'Plan'),
+    ('e1f5d2b9-4c0b-4f5c-9d3a-6b5f5c7e3a8b', 'directive', 'directive', 'Directive'),
+    ('9b3e6f5b-8a4d-4f8c-9b3a-8c7f5b3a6d1e', 'order', 'order', 'Order'),
+    ('58f6d1c8-4b9b-4f5a-9b3a-d5f3a5b8e4a7', 'original-order', 'original-order', 'Original Order'),
+    ('d7a4b6c9-4c5b-4d5a-9f5b-7e5b8a6f7e3a', 'reflex-order', 'reflex-order', 'Reflex Order'),
+    ('a8f5b7c8-4d5b-4f5a-9b3a-6d7f5e3a8b9c', 'filler-order', 'filler-order', 'Filler Order'),
+    ('c9e5d6f1-4b7b-4f5c-9b3a-8d7f5c6a3e5a', 'instance-order', 'instance-order', 'Instance Order'),
+    ('8f5b7e6d-4f8b-4d5a-9b3a-7c5f3a8b6d1e', 'option', 'option', 'Option');
+
  -- Concept Concept Set 
 INSERT INTO public."ConceptConceptSet"("Id", "ConceptId", "ConceptSetId")
 VALUES 
@@ -116,6 +145,22 @@ VALUES
 	(gen_random_uuid(),'80ad8e8f-34c3-42bb-84d8-c59db8348bf7', PractitionerReferenceTypeConceptSet),
 	(gen_random_uuid(),'77f1f45b-861f-4183-9f4f-e8529e45b38f', PractitionerReferenceTypeConceptSet),
 	(gen_random_uuid(),'6b40d73f-5a20-4de3-9ef0-60bfab08d31e', PractitionerReferenceTypeConceptSet);
+	(gen_random_uuid(), 'dfeab3cc-3d73-4d93-89a4-5db9753e1f9f', StatusConceptSet),
+    (gen_random_uuid(), '946b7d3c-9c12-4bb8-9d3a-8f5b7e78d2f3', StatusConceptSet),
+    (gen_random_uuid(), '72ef2b5e-8e25-473a-a78c-d3120f4c913a', StatusConceptSet),
+    (gen_random_uuid(), 'a5b3e865-3c0b-4a4e-9b39-bdd8ff6c0cf7', StatusConceptSet),
+    (gen_random_uuid(), '0cdd69f5-4b9b-403e-b8cb-d6a5af5f8203', StatusConceptSet),
+    (gen_random_uuid(), '3a7958b4-8a4d-4d5b-8ff4-d78c8ab07e53', StatusConceptSet),
+    (gen_random_uuid(), '28d51738-3a60-4a4e-8f5b-d61e5c7c1a79', StatusConceptSet);
+	(gen_random_uuid(), 'bc1f6a17-4a4e-4f5b-9b39-c67f68c6d3f4', IntentConceptSet),
+    (gen_random_uuid(), '26e5a784-8a6b-4f8b-9f5b-7e5f3a6b789a', IntentConceptSet),
+    (gen_random_uuid(), 'e1f5d2b9-4c0b-4f5c-9d3a-6b5f5c7e3a8b', IntentConceptSet),
+    (gen_random_uuid(), '9b3e6f5b-8a4d-4f8c-9b3a-8c7f5b3a6d1e', IntentConceptSet),
+    (gen_random_uuid(), '58f6d1c8-4b9b-4f5a-9b3a-d5f3a5b8e4a7', IntentConceptSet),
+    (gen_random_uuid(), 'd7a4b6c9-4c5b-4d5a-9f5b-7e5b8a6f7e3a', IntentConceptSet),
+    (gen_random_uuid(), 'a8f5b7c8-4d5b-4f5a-9b3a-6d7f5e3a8b9c', IntentConceptSet),
+    (gen_random_uuid(), 'c9e5d6f1-4b7b-4f5c-9b3a-8d7f5c6a3e5a', IntentConceptSet),
+    (gen_random_uuid(), '8f5b7e6d-4f8b-4d5a-9b3a-7c5f3a8b6d1e', IntentConceptSet);
 
 
 END $$;
