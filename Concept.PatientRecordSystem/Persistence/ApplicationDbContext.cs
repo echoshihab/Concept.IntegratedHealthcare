@@ -55,9 +55,7 @@ namespace Concept.PatientRecordSystem.Persistence
             modelBuilder.Entity<Patient>()
                 .HasMany(p => p.Languages)
                 .WithOne(l => l.Patient)
-                .HasForeignKey(l => l.PatientId);
-
-            // Patient and 
+                .HasForeignKey(l => l.PatientId);        
                 
             // Patient and telecommunication
             modelBuilder.Entity<Patient>()
@@ -88,7 +86,11 @@ namespace Concept.PatientRecordSystem.Persistence
             // Procedure Detail
             modelBuilder.Entity<ProcedureDetail>()
                 .Property(p => p.Id)
-                .HasDefaultValueSql("gen_random_uuid()");        
+                .HasDefaultValueSql("gen_random_uuid()");
+
+            modelBuilder.Entity<Modality>()
+                .Property(p => p.Id)
+                .HasDefaultValueSql("gen_random_uuid()");
         }
 
         public DbSet<Address> Addresses { get; set; }
@@ -104,5 +106,6 @@ namespace Concept.PatientRecordSystem.Persistence
         public DbSet<PatientPractitioner> PatientPractitioners { get; set; }
         public DbSet<ProcedureDetail> ProcedureDetails { get; set; }
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
+        public DbSet<Modality> Modalities { get; set; }
     }
 }
