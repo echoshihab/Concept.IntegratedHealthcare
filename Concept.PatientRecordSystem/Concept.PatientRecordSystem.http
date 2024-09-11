@@ -64,7 +64,7 @@ Content-Type: application/json
   ],
   "generalPractitioner": [
     {
-      "reference": "Practitioner/1abe5fd9-5021-4ef7-a832-8595f225ba00"
+      "reference": "Practitioner/e9c92da9-124b-4e31-a2cf-6c2947e095b0"
     }
   ]
 }
@@ -108,3 +108,46 @@ Content-Type: application/json
   ]
 }
 
+###
+POST {{Concept.PatientRecordSystem_HostAddress}}/practitioner/
+Content-Type: application/json
+
+{
+  "resourceType" : "ServiceRequest",
+  "id" : "foodpantry-referral",
+  "meta" : {
+    "profile" : [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-servicerequest|7.0.0"
+    ]
+  },
+  "status" : "active",
+  "intent" : "order",
+  "category" : [
+    {
+      "coding" : [
+        {
+          "system" : "http://snomed.info/sct",
+          "code" : "363679005",
+          "display" : "Imaging"
+        }
+      ]
+    }
+  ],
+  "code" : {
+    "coding" : [
+      {
+        "system" : "http://loinc.org",
+        "code" : "103424-8",
+        "display" : "XR Ankle - bilateral Single view"
+      }
+    ]
+  },
+  "subject" : {
+    "reference" : "Patient/guidhere"
+  },
+  "occurrenceDateTime" : "2024-09-10",
+  "authoredOn" : "2024-09-07T10:59:38-08:00",
+  "requester" : {
+    "reference" : "Practitioner/guidhere"
+  }
+}
