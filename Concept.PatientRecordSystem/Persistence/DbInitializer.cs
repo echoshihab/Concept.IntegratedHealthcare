@@ -53,7 +53,7 @@ namespace Concept.PatientRecordSystem.Persistence
                     {
                         Description = "XR Ankle - bilateral Single view",
                         Display = "BIANKL1V",
-                        Code = "10342-8",
+                        Code = "103424-8",
                         Active = true,
                         ModalityId = crModalityId
                     },
@@ -61,7 +61,7 @@ namespace Concept.PatientRecordSystem.Persistence
                     {
                         Description = "XR Ankle - bilateral Single view",
                         Display = "BIANKL1V",
-                        Code = "10342-8",
+                        Code = "103424-8",
                         Active = true,
                         ModalityId = drModalityId
                     },
