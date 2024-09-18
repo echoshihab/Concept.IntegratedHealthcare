@@ -4,8 +4,8 @@ namespace Concept.PatientRecordSystem.Persistence.Models
 {
     public class ServiceRequest : IdentifiedData
     {
-        public DateTime Start { get; set; }  //occurrence period
-        public DateTime End { get; set; }  // occurrence period
+        public DateTime? Start { get; set; }  //occurrence period
+        public DateTime? End { get; set; }  // occurrence period
         // TODO: Encounter
         public DateTime RequestSignedDate { get; set; } //request signed date
         public Concept Status { get; set; } = null!; // Status
