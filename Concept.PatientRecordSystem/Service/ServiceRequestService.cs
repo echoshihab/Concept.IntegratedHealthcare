@@ -20,8 +20,8 @@ namespace Concept.PatientRecordSystem.Service
         public override async Task<Hl7.Fhir.Model.ServiceRequest> CreateAsync(Hl7.Fhir.Model.ServiceRequest serviceRequest)
         {
             var resolver = new FhirPackageSource(ModelInfo.ModelInspector, "https://packages.simplifier.net",
-                     new[] { "hl7.fhir.r4.core" }
-               );
+                new[] { "hl7.fhir.r4.core" }
+            );
 
             var directoryResolver = new DirectorySource("Profiles", new DirectorySourceSettings
             {
@@ -59,33 +59,55 @@ namespace Concept.PatientRecordSystem.Service
                 }
             }
 
+            // authored on
             if (serviceRequest.AuthoredOn != null)
             {
                 serviceRequestdb.RequestSignedDate = DateTime.TryParse(serviceRequest.AuthoredOn, out var signedDate) ? signedDate : null;
             }
 
-            if (serviceRequest.Requester?.Reference != null)
+            // requester
+            var requesterReference = serviceRequest.Requester?.Reference;
+
+            if (!string.IsNullOrEmpty(requesterReference) && requesterReference.StartsWith("Practitioner/"))
             {
-                var reference = serviceRequest.Requester.Reference;
+                //get practitioner reference type concept id
+                var practitionerReferenceTypeId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Code == "practitioner"))?.Id ?? throw new NullReferenceException();
 
-                if (reference.StartsWith("Practitioner/"))
+                _ = Guid.TryParse(requesterReference.Split('/')[1], out var practitionerId);
+
+                var practitioner = await _context.Practitioners.FindAsync(practitionerId);
+
+                if (practitioner != null)
                 {
-                    //get practitioner reference type concept id
-                    var practitionerReferenceTypeId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Code == "practitioner"))?.Id ?? throw new NullReferenceException();
-
-                    _ = Guid.TryParse(reference.Split('/')[1], out var practitionerId);
-
-                    var practitioner = await _context.Practitioners.FindAsync(practitionerId);
-
-                    if (practitioner != null)
+                    serviceRequestdb.Requester = new PatientPractitioner()
                     {
-                        serviceRequestdb.Requester = new PatientPractitioner()
-                            {
-                                PractitionerReferenceTypeConceptId = practitionerReferenceTypeId,
-                                PractitionerReferenceId = practitioner.Id
-                            };
-                    }
+                        PractitionerReferenceTypeConceptId = practitionerReferenceTypeId,
+                        PractitionerReferenceId = practitioner.Id
+                    };
                 }
+            }
+            var subjectReference = serviceRequest.Subject?.Reference;
+
+            // subject
+            if (string.IsNullOrEmpty(subjectReference) || !subjectReference.StartsWith("Patient/"))
+            {
+                throw new NotSupportedException($"Only patient for {nameof(serviceRequest.Subject)} is currently supported");
+            }
+
+            _ = Guid.TryParse(subjectReference.Split('/')[1], out var patientId);
+
+            var patient = await _context.Patients.FindAsync(patientId) ?? throw new NullReferenceException();
+
+            serviceRequestdb.PatientId = patient.Id;
+            
+
+            // status
+
+            // intent
+            
+            // procedure detail
+
+
 
 
                 //TODO : add service request logic
