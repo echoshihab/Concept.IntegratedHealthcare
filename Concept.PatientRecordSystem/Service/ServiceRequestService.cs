@@ -6,6 +6,7 @@ using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
+using Microsoft.EntityFrameworkCore;
 
 namespace Concept.PatientRecordSystem.Service
 {
@@ -16,7 +17,7 @@ namespace Concept.PatientRecordSystem.Service
             
         }
 
-        public override Task<Hl7.Fhir.Model.ServiceRequest> CreateAsync(Hl7.Fhir.Model.ServiceRequest serviceRequest)
+        public override async Task<Hl7.Fhir.Model.ServiceRequest> CreateAsync(Hl7.Fhir.Model.ServiceRequest serviceRequest)
         {
             var resolver = new FhirPackageSource(ModelInfo.ModelInspector, "https://packages.simplifier.net",
                      new[] { "hl7.fhir.r4.core" }
@@ -40,26 +41,54 @@ namespace Concept.PatientRecordSystem.Service
                 throw new InvalidResourceException("Invalid Resource");
             }
 
-
             var serviceRequestdb = new Persistence.Models.ServiceRequest();
+
+            // TODO: Need to handle fhir dateTime correctly 
+            // https://hl7.org/fhir/R4/datatypes.html#dateTime
 
             if (serviceRequest.Occurrence is Period occurencePeriod)
             {
-
                 if (!string.IsNullOrEmpty(occurencePeriod.Start))
                 {
-                    serviceRequestdb.Start = DateTime.TryParse(occurencePeriod.Start, out DateTime start) ? start : null;
+                    serviceRequestdb.Start = DateTime.TryParse(occurencePeriod.Start, out var start) ? start : null;
                 }
 
                 if (!string.IsNullOrEmpty(occurencePeriod.End))
                 {
-                    serviceRequestdb.End = DateTime.TryParse(occurencePeriod.End, out DateTime end) ? end : null;
+                    serviceRequestdb.End = DateTime.TryParse(occurencePeriod.End, out var end) ? end : null;
                 }
-
             }
 
+            if (serviceRequest.AuthoredOn != null)
+            {
+                serviceRequestdb.RequestSignedDate = DateTime.TryParse(serviceRequest.AuthoredOn, out var signedDate) ? signedDate : null;
+            }
 
-            //TODO : add service request logic
+            if (serviceRequest.Requester?.Reference != null)
+            {
+                var reference = serviceRequest.Requester.Reference;
+
+                if (reference.StartsWith("Practitioner/"))
+                {
+                    //get practitioner reference type concept id
+                    var practitionerReferenceTypeId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Code == "practitioner"))?.Id ?? throw new NullReferenceException();
+
+                    _ = Guid.TryParse(reference.Split('/')[1], out var practitionerId);
+
+                    var practitioner = await _context.Practitioners.FindAsync(practitionerId);
+
+                    if (practitioner != null)
+                    {
+                        serviceRequestdb.Requester = new PatientPractitioner()
+                            {
+                                PractitionerReferenceTypeConceptId = practitionerReferenceTypeId,
+                                PractitionerReferenceId = practitioner.Id
+                            };
+                    }
+                }
+
+
+                //TODO : add service request logic
             return base.CreateAsync(fhirResource);
         }
     }

@@ -7,7 +7,7 @@ namespace Concept.PatientRecordSystem.Persistence.Models
         public DateTime? Start { get; set; }  //occurrence period
         public DateTime? End { get; set; }  // occurrence period
         // TODO: Encounter
-        public DateTime RequestSignedDate { get; set; } //request signed date
+        public DateTime? RequestSignedDate { get; set; } //request signed date
         public Concept Status { get; set; } = null!; // Status
         public Concept Intent { get; set; } = null!; // Intent
         public ProcedureDetail ProcedureDetail { get; set; } = null!; // Code
