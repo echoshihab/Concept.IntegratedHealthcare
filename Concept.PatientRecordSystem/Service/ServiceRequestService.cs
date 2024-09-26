@@ -108,13 +108,17 @@ namespace Concept.PatientRecordSystem.Service
             var intentConceptId = (await base._context.Concepts.FirstOrDefaultAsync(c => c.Value == serviceRequest.IntentElement.Value.ToString()))?.Id ?? throw new NullReferenceException();
             serviceRequestdb.IntentId = intentConceptId;
 
-            
-            // procedure detail
+            // ServiceRequest.Code => procedure detail
+            var procedureCode = serviceRequest.Code.Coding.FirstOrDefault()?.Code ?? throw new NullReferenceException();
+            var procedureDetailId = (await base._context.ProcedureDetails.FirstOrDefaultAsync(c => c.Code == procedureCode))?.Id ?? throw new NullReferenceException();
+            serviceRequestdb.ProcedureDetailId = procedureDetailId;
 
 
 
 
-                //TODO : add service request logic
+
+
+            //TODO : add service request logic
             return base.CreateAsync(fhirResource);
         }
     }
