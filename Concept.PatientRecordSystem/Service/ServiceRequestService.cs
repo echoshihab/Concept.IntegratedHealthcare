@@ -70,20 +70,13 @@ namespace Concept.PatientRecordSystem.Service
 
             if (!string.IsNullOrEmpty(requesterReference) && requesterReference.StartsWith("Practitioner/"))
             {
-                //get practitioner reference type concept id
-                var practitionerReferenceTypeId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Code == "practitioner"))?.Id ?? throw new NullReferenceException();
-
                 _ = Guid.TryParse(requesterReference.Split('/')[1], out var practitionerId);
 
                 var practitioner = await _context.Practitioners.FindAsync(practitionerId);
 
                 if (practitioner != null)
                 {
-                    serviceRequestdb.Requester = new PatientPractitioner()
-                    {
-                        PractitionerReferenceTypeConceptId = practitionerReferenceTypeId,
-                        PractitionerReferenceId = practitioner.Id
-                    };
+                    serviceRequestdb.RequesterId = practitioner.Id;
                 }
             }
             var subjectReference = serviceRequest.Subject?.Reference;
@@ -112,9 +105,6 @@ namespace Concept.PatientRecordSystem.Service
             var procedureCode = serviceRequest.Code.Coding.FirstOrDefault()?.Code ?? throw new NullReferenceException();
             var procedureDetailId = (await base._context.ProcedureDetails.FirstOrDefaultAsync(c => c.Code == procedureCode))?.Id ?? throw new NullReferenceException();
             serviceRequestdb.ProcedureDetailId = procedureDetailId;
-
-
-
 
 
 
