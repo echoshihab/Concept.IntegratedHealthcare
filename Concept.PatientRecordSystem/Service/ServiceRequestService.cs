@@ -100,10 +100,14 @@ namespace Concept.PatientRecordSystem.Service
 
             serviceRequestdb.PatientId = patient.Id;
             
-
-            // status
+            // status 
+            var statusConceptId = (await base._context.Concepts.FirstOrDefaultAsync(c => c.Value == serviceRequest.StatusElement.Value.ToString()))?.Id ?? throw new NullReferenceException();
+            serviceRequestdb.StatusId = statusConceptId;
 
             // intent
+            var intentConceptId = (await base._context.Concepts.FirstOrDefaultAsync(c => c.Value == serviceRequest.IntentElement.Value.ToString()))?.Id ?? throw new NullReferenceException();
+            serviceRequestdb.IntentId = intentConceptId;
+
             
             // procedure detail
 
