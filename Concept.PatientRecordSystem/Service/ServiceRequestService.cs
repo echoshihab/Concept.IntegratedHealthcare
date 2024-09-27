@@ -107,9 +107,10 @@ namespace Concept.PatientRecordSystem.Service
             serviceRequestdb.ProcedureDetailId = procedureDetailId;
 
 
+            base._context.ServiceRequests.Add(serviceRequestdb);
+            await base._context.SaveChangesAsync();
 
-            //TODO : add service request logic
-            return base.CreateAsync(fhirResource);
+            return serviceRequest;
         }
     }
 }

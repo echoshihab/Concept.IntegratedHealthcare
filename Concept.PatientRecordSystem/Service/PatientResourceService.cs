@@ -235,7 +235,7 @@ namespace Concept.PatientRecordSystem.Service
 
                 patientDb.Individual = patientDbIndividual;
 
-                // add practitioner (continue here)
+                // add practitioner 
                 if (patient.GeneralPractitioner.Count > 0)
                 {
                     var references = patient.GeneralPractitioner.Select(c => c.Reference);

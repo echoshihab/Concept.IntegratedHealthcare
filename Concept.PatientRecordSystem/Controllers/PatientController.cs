@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Concept.PatientRecordSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class PatientController : FhirControllerBase<Patient>
     {
         
@@ -14,9 +13,5 @@ namespace Concept.PatientRecordSystem.Controllers
           
         }
 
-        public override Task<IActionResult> CreateAsync(Patient resource)
-        {
-            return base.CreateAsync(resource);
-        }      
     }
 }

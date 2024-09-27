@@ -10,10 +10,5 @@ namespace Concept.PatientRecordSystem.Controllers
         {
             
         }
-
-        public override Task<IActionResult> CreateAsync(ServiceRequest resource)
-        {
-            return base.CreateAsync(resource);
-        }
     }
 }

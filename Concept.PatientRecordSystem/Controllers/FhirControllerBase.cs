@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Concept.PatientRecordSystem.Controllers
 {
     [ApiController]
+    [Route("[controller]")]
     public abstract class FhirControllerBase<TResource> : ControllerBase where TResource: Resource
     {
         private IResourceService<TResource> _resourceService;
