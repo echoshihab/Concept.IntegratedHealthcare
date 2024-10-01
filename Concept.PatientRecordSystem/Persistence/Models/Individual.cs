@@ -4,9 +4,9 @@
     {
         public Individual()
         {
-            this.Identifiers = [];
-            this.Addresses = [];
-            this.NameParts = [];
+            this.Identifiers = new List<Identifier>();
+            this.Addresses = new List<Address>();
+            this.NameParts = new List<NamePart>();
         }
 
         public Guid IndividualTypeConceptId { get; set; }

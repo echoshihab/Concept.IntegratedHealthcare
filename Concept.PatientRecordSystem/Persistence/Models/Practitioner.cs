@@ -3,8 +3,8 @@
     public class Practitioner : IdentifiedData
     {
         public Practitioner()
-        {            
-            Telecoms = [];
+        {
+            this.Telecoms = new List<PractitionerTelecom>();
         }
 
         public Guid IndividualId { get; set; }
