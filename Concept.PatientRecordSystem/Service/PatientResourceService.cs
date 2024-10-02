@@ -220,10 +220,9 @@ namespace Concept.PatientRecordSystem.Service
 
                         patientDbIndividual.Addresses.Add(patientDbAddress);
                     }
-
                 }
 
-                    // add gender
+                // add gender
                 var genderConceptId = (await _context.Concepts.FirstOrDefaultAsync(c => c.Value == patient.GenderElement.Value.ToString()))?.Id ?? throw new InvalidResourceException("Invalid resource");
 
                 patientDb.GenderConceptId = genderConceptId;

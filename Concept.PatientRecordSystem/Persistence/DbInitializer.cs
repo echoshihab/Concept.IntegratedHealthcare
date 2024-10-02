@@ -20,6 +20,18 @@ namespace Concept.PatientRecordSystem.Persistence
                 var usModalityId = Guid.Parse("b845624f-ed94-4d10-9e2a-49ccacfe125f");
                 var crModalityId = Guid.Parse("892f8d2a-ae9a-432e-bc98-dfd9f0455d4c");
                 var drModalityId = Guid.Parse("933b6442-c5b4-48c4-a4d0-aff72e6da249");
+                var usProcedureDetailId = Guid.Parse("ccdf32c4-82ed-4bdc-a218-c941c2a043ac");
+                var crProcedureDetailId = Guid.Parse("a6c3fbbd-c064-40a5-bc5d-f2a4cd5373ea");
+                var drProcedureDetailId = Guid.Parse("c2476cf1-3671-47ef-82ec-6607b5ebf763");
+                var individualTypePractitionerId = Guid.Parse("4297af86-e72d-4768-89c6-dfb9af9f84d0");
+                var givenNameConceptId = Guid.Parse("05646cc6-b67f-4caa-be05-67b3e0bd6fe9");
+                var familyNameConceptId = Guid.Parse("166daa19-2148-4d4d-991d-f6f9e83203c0");
+                var workConactUseConceptId = Guid.Parse("b39b2467-fc53-42ba-a737-712e2c045d82");
+                var phoneContactSystemConceptId = Guid.Parse("140076a0-a8e0-4323-a144-bc1ac83b6340");
+                var practitionerId1 = Guid.Parse("c452abfa-9a7b-420f-a664-92abf8429531");
+                var practitionerId2 = Guid.Parse("1ac1e797-666a-4679-9e30-92a9727dc627");
+                var practitionerReferenceTypeConceptId = Guid.Parse("77f1f45b-861f-4183-9f4f-e8529e45b38f");
+
 
                 // Seed modalities and procedure detail
                 var modalities = new List<Modality>()
@@ -52,6 +64,7 @@ namespace Concept.PatientRecordSystem.Persistence
                 {
                     new ProcedureDetail()
                     {
+                        Id = crProcedureDetailId,
                         Description = "XR Ankle - bilateral Single view",
                         Display = "BIANKL1V",
                         Code = "103424-8",
@@ -60,6 +73,7 @@ namespace Concept.PatientRecordSystem.Persistence
                     },
                     new ProcedureDetail()
                     {
+                        Id = drProcedureDetailId,
                         Description = "XR Ankle - bilateral Single view",
                         Display = "BIANKL1V",
                         Code = "103424-8",
@@ -68,6 +82,7 @@ namespace Concept.PatientRecordSystem.Persistence
                     },
                     new ProcedureDetail()
                     {
+                        Id = usProcedureDetailId,
                         Description = "US Liver",
                         Display = "LIV",
                         Code = "28614-6",
@@ -77,21 +92,8 @@ namespace Concept.PatientRecordSystem.Persistence
                 };
 
                 context.ProcedureDetails.AddRange(procedureDetails);
-            }
 
-
-            // seed Practitioners, patient and service request
-            if (!context.Practitioners.Any())
-            {
-                var individualTypePractitionerId = Guid.Parse("4297af86-e72d-4768-89c6-dfb9af9f84d0");
-                var givenNameConceptId = Guid.Parse("05646cc6-b67f-4caa-be05-67b3e0bd6fe9");
-                var familyNameConceptId = Guid.Parse("166daa19-2148-4d4d-991d-f6f9e83203c0");
-                var workConactUseConceptId = Guid.Parse("b39b2467-fc53-42ba-a737-712e2c045d82");
-                var phoneContactSystemConceptId = Guid.Parse("140076a0-a8e0-4323-a144-bc1ac83b6340");
-                var practitionerId1 = Guid.Parse("c452abfa-9a7b-420f-a664-92abf8429531");
-                var practitionerId2 = Guid.Parse("1ac1e797-666a-4679-9e30-92a9727dc627");
-                var practitionerReferenceTypeConceptId = Guid.Parse("77f1f45b-861f-4183-9f4f-e8529e45b38f");
-
+                // seed Practitioners, patient and service request
                 var practitionerIndividual1 = new Individual()
                 {
                     IndividualTypeConceptId = individualTypePractitionerId,
@@ -194,6 +196,18 @@ namespace Concept.PatientRecordSystem.Persistence
                     Telecoms = new List<PatientTelecom>() { patientTelecom },
                     PatientPractitioners = new List<PatientPractitioner> { patientPractitioner }
                 });
+
+                var serviceRequest = new ServiceRequest()
+                {
+                    Start = new DateTime(2024, 10, 01),
+                    IntentId = Guid.Parse("9b3e6f5b-8a4d-4f8c-9b3a-8c7f5b3a6d1e"),
+                    StatusId = Guid.Parse("946b7d3c-9c12-4bb8-9d3a-8f5b7e78d2f3"),
+                    PatientId = patientId,
+                    ProcedureDetailId = crProcedureDetailId,
+                    RequesterId = practitionerId1
+                };
+
+                context.ServiceRequests.Add(serviceRequest);
             }
 
             context.SaveChanges();
