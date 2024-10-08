@@ -199,7 +199,7 @@ namespace Concept.PatientRecordSystem.Persistence
 
                 var serviceRequest = new ServiceRequest()
                 {
-                    Start = new DateTime(2024, 10, 01),
+                    Start = new DateTime(2024, 10, 01).ToUniversalTime(),
                     IntentId = Guid.Parse("9b3e6f5b-8a4d-4f8c-9b3a-8c7f5b3a6d1e"),
                     StatusId = Guid.Parse("946b7d3c-9c12-4bb8-9d3a-8f5b7e78d2f3"),
                     PatientId = patientId,
