@@ -650,6 +650,7 @@ namespace Concept.PatientRecordSystem.Migrations
                     b.HasOne("Concept.PatientRecordSystem.Persistence.Models.PatientPractitioner", "Requester")
                         .WithMany()
                         .HasForeignKey("RequesterId")
+                        .HasPrincipalKey("PractitionerReferenceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

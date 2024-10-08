@@ -91,6 +91,12 @@ namespace Concept.PatientRecordSystem.Persistence
             modelBuilder.Entity<Modality>()
                 .Property(p => p.Id)
                 .HasDefaultValueSql("gen_random_uuid()");
+
+            modelBuilder.Entity<ServiceRequest>()
+                .HasOne(s => s.Requester)
+                    .WithMany()
+                .HasForeignKey(s => s.RequesterId)
+                .HasPrincipalKey(p => p.PractitionerReferenceId);               
         }
 
         public DbSet<Address> Addresses { get; set; }
