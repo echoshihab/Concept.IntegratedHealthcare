@@ -24,7 +24,7 @@ VALUES
 		( ContactPointUseConceptSet,'ContactPointUse'),
 		( GenderConceptSet, 'AdministrativeGender'),
 		( IndividualTypeConceptSet, 'IndividualType'),
-		( PractitionerReferenceTypeConceptSet, 'PractitionerReferenceType');
+		( PractitionerReferenceTypeConceptSet, 'PractitionerReferenceType'),
 		( StatusConceptSet, 'Status'),
         ( IntentConceptSet, 'Intent');
 
@@ -144,14 +144,14 @@ VALUES
 	(gen_random_uuid(),'4297af86-e72d-4768-89c6-dfb9af9f84d0', IndividualTypeConceptSet),
 	(gen_random_uuid(),'80ad8e8f-34c3-42bb-84d8-c59db8348bf7', PractitionerReferenceTypeConceptSet),
 	(gen_random_uuid(),'77f1f45b-861f-4183-9f4f-e8529e45b38f', PractitionerReferenceTypeConceptSet),
-	(gen_random_uuid(),'6b40d73f-5a20-4de3-9ef0-60bfab08d31e', PractitionerReferenceTypeConceptSet);
+	(gen_random_uuid(),'6b40d73f-5a20-4de3-9ef0-60bfab08d31e', PractitionerReferenceTypeConceptSet),
 	(gen_random_uuid(), 'dfeab3cc-3d73-4d93-89a4-5db9753e1f9f', StatusConceptSet),
     (gen_random_uuid(), '946b7d3c-9c12-4bb8-9d3a-8f5b7e78d2f3', StatusConceptSet),
     (gen_random_uuid(), '72ef2b5e-8e25-473a-a78c-d3120f4c913a', StatusConceptSet),
     (gen_random_uuid(), 'a5b3e865-3c0b-4a4e-9b39-bdd8ff6c0cf7', StatusConceptSet),
     (gen_random_uuid(), '0cdd69f5-4b9b-403e-b8cb-d6a5af5f8203', StatusConceptSet),
     (gen_random_uuid(), '3a7958b4-8a4d-4d5b-8ff4-d78c8ab07e53', StatusConceptSet),
-    (gen_random_uuid(), '28d51738-3a60-4a4e-8f5b-d61e5c7c1a79', StatusConceptSet);
+    (gen_random_uuid(), '28d51738-3a60-4a4e-8f5b-d61e5c7c1a79', StatusConceptSet),
 	(gen_random_uuid(), 'bc1f6a17-4a4e-4f5b-9b39-c67f68c6d3f4', IntentConceptSet),
     (gen_random_uuid(), '26e5a784-8a6b-4f8b-9f5b-7e5f3a6b789a', IntentConceptSet),
     (gen_random_uuid(), 'e1f5d2b9-4c0b-4f5c-9d3a-6b5f5c7e3a8b', IntentConceptSet),
