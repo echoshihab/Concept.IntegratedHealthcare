@@ -1,6 +1,6 @@
 @Concept.PatientRecordSystem_HostAddress = http://localhost:5025
 
-POST {{Concept.PatientRecordSystem_HostAddress}}/patient/
+POST {{Concept.PatientRecordSystem_HostAddress}}/fhir/patient/
 Content-Type: application/json
 
 {

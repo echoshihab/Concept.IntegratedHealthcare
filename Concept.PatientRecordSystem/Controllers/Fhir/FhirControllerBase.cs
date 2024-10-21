@@ -2,11 +2,11 @@
 using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Concept.PatientRecordSystem.Controllers
+namespace Concept.PatientRecordSystem.Controllers.Fhir
 {
     [ApiController]
-    [Route("[controller]")]
-    public abstract class FhirControllerBase<TResource> : ControllerBase where TResource: Resource
+    [Route("fhir/[controller]")]
+    public abstract class FhirControllerBase<TResource> : ControllerBase where TResource : Resource
     {
         private IResourceService<TResource> _resourceService;
         public FhirControllerBase(IResourceService<TResource> resourceService)
@@ -21,9 +21,9 @@ namespace Concept.PatientRecordSystem.Controllers
                 return BadRequest();
             }
 
-            var resourcePersisted = await this._resourceService.CreateAsync(resource);
+            var resourcePersisted = await _resourceService.CreateAsync(resource);
 
-            return this.Ok(resourcePersisted);
+            return Ok(resourcePersisted);
         }
     }
 }
