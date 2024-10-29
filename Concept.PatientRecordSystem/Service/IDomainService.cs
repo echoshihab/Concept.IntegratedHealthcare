@@ -1,10 +1,12 @@
 ﻿
 using Concept.PatientRecordSystem.DTOs;
+using Concept.PatientRecordSystem.Persistence.Models;
+using Hl7.Fhir.Model;
 
 namespace Concept.PatientRecordSystem.Service
 {
-    public interface IDomainService<Tresource> where Tresource : IdentifiableData
+    public interface IDomainService<TDomain, TPersistence> where TDomain : IdentifiableData where TPersistence: IdentifiedData
     {
-        Task<Tresource> CreateAsync(Tresource resource);
+        Task<TDomain> CreateAsync(TDomain resource);
     }
 }
