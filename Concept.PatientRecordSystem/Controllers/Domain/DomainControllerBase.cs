@@ -6,16 +6,14 @@ namespace Concept.PatientRecordSystem.Controllers.Domain
 {
     public abstract class DomainControllerBase<TResource> : ControllerBase where TResource : IdentifiableData
     {
-        private readonly IDomainService<TResource> _domainResourceService;
 
-        public DomainControllerBase(IDomainService<TResource> domainResourceService)
+        public DomainControllerBase()
         {
-            _domainResourceService = domainResourceService;
         }
 
-        public virtual async Task<TResource> CreateAsync(TResource resource)
+        public virtual Task<TResource> CreateAsync(TResource resource)
         {
-            return await _domainResourceService.CreateAsync(resource);
+          throw new NotImplementedException();
         }
     }
 }
