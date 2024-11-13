@@ -1,8 +1,8 @@
-using Concept.PatientRecordSystem.Service;
+using Proto.PatientRecordSystem.Service;
 using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Concept.PatientRecordSystem.Controllers.Fhir
+namespace Proto.PatientRecordSystem.Controllers.Fhir
 {
     [ApiController]
     public class PatientController : FhirControllerBase<Patient>

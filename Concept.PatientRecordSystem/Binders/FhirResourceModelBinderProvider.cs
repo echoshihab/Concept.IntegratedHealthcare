@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
-namespace Concept.PatientRecordSystem.Binder
+namespace Proto.PatientRecordSystem.Binder
 {
     public class FhirResourceModelBinderProvider : IModelBinderProvider
     {

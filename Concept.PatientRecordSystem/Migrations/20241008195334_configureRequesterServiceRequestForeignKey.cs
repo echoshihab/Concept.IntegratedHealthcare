@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Concept.PatientRecordSystem.Migrations
+namespace Proto.PatientRecordSystem.Migrations
 {
     /// <inheritdoc />
     public partial class configureRequesterServiceRequestForeignKey : Migration

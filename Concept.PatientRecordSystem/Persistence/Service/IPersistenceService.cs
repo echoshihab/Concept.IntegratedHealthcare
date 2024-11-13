@@ -1,6 +1,6 @@
-﻿using Concept.PatientRecordSystem.Persistence.Models;
+﻿using Proto.PatientRecordSystem.Persistence.Models;
 
-namespace Concept.PatientRecordSystem.Persistence.Service
+namespace Proto.PatientRecordSystem.Persistence.Service
 {
     public interface IPersistenceService<TResource> where TResource : IdentifiedData
     {

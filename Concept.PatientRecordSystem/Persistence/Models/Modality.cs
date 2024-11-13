@@ -1,6 +1,6 @@
 ﻿using Hl7.Fhir.ElementModel.Types;
 
-namespace Concept.PatientRecordSystem.Persistence.Models
+namespace Proto.PatientRecordSystem.Persistence.Models
 {
     public class Modality : IdentifiedData
     {

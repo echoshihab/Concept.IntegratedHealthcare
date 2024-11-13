@@ -1,4 +1,4 @@
-﻿namespace Concept.PatientRecordSystem
+﻿namespace Proto.PatientRecordSystem
 {
     public class ApplicationConstants
     {

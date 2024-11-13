@@ -1,4 +1,4 @@
-﻿namespace Concept.PatientRecordSystem.Service
+﻿namespace Proto.PatientRecordSystem.Service
 {
     public interface IMappingService<TDomainResource, TPersistenceResource>
     {

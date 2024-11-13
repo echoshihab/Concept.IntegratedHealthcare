@@ -6,7 +6,7 @@ using Hl7.Fhir.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.Json;
 
-namespace Concept.PatientRecordSystem.Binder
+namespace Proto.PatientRecordSystem.Binder
 {
     public class FhirResourceBinder : IModelBinder
     {

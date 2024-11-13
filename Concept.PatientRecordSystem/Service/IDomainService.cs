@@ -1,9 +1,9 @@
 ﻿
-using Concept.PatientRecordSystem.DTOs;
-using Concept.PatientRecordSystem.Persistence.Models;
+using Proto.PatientRecordSystem.DTOs;
+using Proto.PatientRecordSystem.Persistence.Models;
 using Hl7.Fhir.Model;
 
-namespace Concept.PatientRecordSystem.Service
+namespace Proto.PatientRecordSystem.Service
 {
     public interface IDomainService<TDomain, TPersistence> where TDomain : IdentifiableData where TPersistence: IdentifiedData
     {

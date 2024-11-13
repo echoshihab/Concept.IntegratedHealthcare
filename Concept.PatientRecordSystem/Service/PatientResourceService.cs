@@ -1,6 +1,6 @@
-﻿using Concept.PatientRecordSystem.Exceptions;
-using Concept.PatientRecordSystem.Persistence;
-using Concept.PatientRecordSystem.Persistence.Models;
+﻿using Proto.PatientRecordSystem.Exceptions;
+using Proto.PatientRecordSystem.Persistence;
+using Proto.PatientRecordSystem.Persistence.Models;
 using Firely.Fhir.Packages;
 using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;
@@ -10,7 +10,7 @@ using Hl7.Fhir.Specification.Terminology;
 using Hl7.Fhir.Utility;
 using Microsoft.EntityFrameworkCore;
 
-namespace Concept.PatientRecordSystem.Service
+namespace Proto.PatientRecordSystem.Service
 {
     public class PatientResourceService : ResourcePersistenceServiceBase<Hl7.Fhir.Model.Patient>
     {

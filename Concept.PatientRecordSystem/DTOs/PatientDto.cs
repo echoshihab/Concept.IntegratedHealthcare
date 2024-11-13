@@ -1,7 +1,7 @@
-﻿using Concept.PatientRecordSystem.Persistence.Models;
+﻿using Proto.PatientRecordSystem.Persistence.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Concept.PatientRecordSystem.DTOs
+namespace Proto.PatientRecordSystem.DTOs
 {
     public class PatientDto : IdentifiableData
     {

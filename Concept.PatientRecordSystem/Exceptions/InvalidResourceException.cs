@@ -1,4 +1,4 @@
-﻿namespace Concept.PatientRecordSystem.Exceptions
+﻿namespace Proto.PatientRecordSystem.Exceptions
 {
     public class InvalidResourceException : Exception
     {

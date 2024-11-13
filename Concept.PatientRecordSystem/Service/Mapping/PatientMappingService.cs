@@ -1,7 +1,7 @@
-﻿using Concept.PatientRecordSystem.DTOs;
-using Concept.PatientRecordSystem.Persistence.Models;
+﻿using Proto.PatientRecordSystem.DTOs;
+using Proto.PatientRecordSystem.Persistence.Models;
 
-namespace Concept.PatientRecordSystem.Service.Mapping
+namespace Proto.PatientRecordSystem.Service.Mapping
 {
     public class PatientMappingService : IMappingService<PatientDto, Patient>
     {

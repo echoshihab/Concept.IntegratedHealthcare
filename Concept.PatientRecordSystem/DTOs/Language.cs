@@ -1,4 +1,4 @@
-﻿namespace Concept.PatientRecordSystem.DTOs
+﻿namespace Proto.PatientRecordSystem.DTOs
 {
     public class Language
     {

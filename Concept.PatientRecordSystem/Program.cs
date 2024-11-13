@@ -1,7 +1,7 @@
-using Concept.PatientRecordSystem.Binder;
-using Concept.PatientRecordSystem.Exceptions;
-using Concept.PatientRecordSystem.Persistence;
-using Concept.PatientRecordSystem.Service;
+using Proto.PatientRecordSystem.Binder;
+using Proto.PatientRecordSystem.Exceptions;
+using Proto.PatientRecordSystem.Persistence;
+using Proto.PatientRecordSystem.Service;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 

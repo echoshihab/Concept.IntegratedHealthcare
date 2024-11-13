@@ -1,6 +1,6 @@
 ﻿
 
-namespace Concept.PatientRecordSystem.Persistence.Models
+namespace Proto.PatientRecordSystem.Persistence.Models
 {
     public class ServiceRequest : IdentifiedData
     {

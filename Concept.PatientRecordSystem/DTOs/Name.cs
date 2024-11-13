@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Concept.PatientRecordSystem.DTOs
+namespace Proto.PatientRecordSystem.DTOs
 {
     public class Name
     {

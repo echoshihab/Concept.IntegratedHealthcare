@@ -1,7 +1,7 @@
-﻿using Concept.PatientRecordSystem.Persistence.Models;
+﻿using Proto.PatientRecordSystem.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Concept.PatientRecordSystem.Persistence.Service
+namespace Proto.PatientRecordSystem.Persistence.Service
 {
     public abstract class PersistenceServiceBase<TResource> : IPersistenceService<TResource> where  TResource : IdentifiedData
     {

@@ -1,7 +1,7 @@
-﻿using Concept.PatientRecordSystem.Persistence.Models;
+﻿using Proto.PatientRecordSystem.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Concept.PatientRecordSystem.Persistence
+namespace Proto.PatientRecordSystem.Persistence
 {
     public class DbInitializer
     {

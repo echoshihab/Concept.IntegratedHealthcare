@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Concept.PatientRecordSystem.Migrations
+namespace Proto.PatientRecordSystem.Migrations
 {
     /// <inheritdoc />
     public partial class fixPractitionerReferenceType : Migration

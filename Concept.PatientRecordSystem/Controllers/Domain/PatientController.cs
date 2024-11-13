@@ -1,8 +1,8 @@
-﻿using Concept.PatientRecordSystem.DTOs;
-using Concept.PatientRecordSystem.Persistence.Models;
-using Concept.PatientRecordSystem.Service;
+﻿using Proto.PatientRecordSystem.DTOs;
+using Proto.PatientRecordSystem.Persistence.Models;
+using Proto.PatientRecordSystem.Service;
 
-namespace Concept.PatientRecordSystem.Controllers.Domain
+namespace Proto.PatientRecordSystem.Controllers.Domain
 {
     public class PatientController : DomainControllerBase<PatientDto>
     {

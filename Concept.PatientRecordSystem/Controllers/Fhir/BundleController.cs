@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Concept.PatientRecordSystem.Controllers.Fhir
+namespace Proto.PatientRecordSystem.Controllers.Fhir
 {
     public class BundleController : Controller
     {

@@ -1,8 +1,8 @@
-﻿using Concept.PatientRecordSystem.DTOs;
-using Concept.PatientRecordSystem.Service;
+﻿using Proto.PatientRecordSystem.DTOs;
+using Proto.PatientRecordSystem.Service;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Concept.PatientRecordSystem.Controllers.Domain
+namespace Proto.PatientRecordSystem.Controllers.Domain
 {
     public abstract class DomainControllerBase<TResource> : ControllerBase where TResource : IdentifiableData
     {
