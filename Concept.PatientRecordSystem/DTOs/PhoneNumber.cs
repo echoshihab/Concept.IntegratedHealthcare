@@ -5,7 +5,7 @@ namespace Proto.PatientRecordSystem.DTOs
     public class ContactPhone
     {
         [Phone]
-        public string? Value { get; set; }
+        public required string Value { get; set; }
         public string? Use { get; set; }
     }
 }

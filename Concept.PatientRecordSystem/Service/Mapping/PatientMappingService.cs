@@ -54,6 +54,28 @@ namespace Proto.PatientRecordSystem.Service.Mapping
                 });
             }
 
+
+            var phoneNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.ContactPointTypePhone) ?? throw new ArgumentNullException();
+
+            if (domainResource.PhoneNumbers.Count > 0)
+            {
+                foreach ( var phoneNumber in domainResource.PhoneNumbers )
+                {
+                    var patientTelecom = new PatientTelecom
+                    {
+                        Value = phoneNumber.Value,
+                        ContactSystemConceptId = phoneNameConcept.Id
+                    };
+                                        
+                    if (!string.IsNullOrWhiteSpace(phoneNumber.Use))
+                    {
+                       var useConcept =  await this._conceptService.RetreiveConceptAsync(phoneNumber.Use) ?? throw new InvalidResourceException();
+                       patientTelecom.ContactPointUseConceptId = useConcept.Id;
+                    }
+
+                    patient.Telecoms.Add(patientTelecom);
+                }               
+            }
             
 
             return patient;
