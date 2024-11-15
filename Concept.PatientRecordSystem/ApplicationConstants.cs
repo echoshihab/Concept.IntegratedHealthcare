@@ -13,5 +13,6 @@
         public const string NameTypeGiven = "Given";
         public const string NameTypeFamily = "Family";
         public const string ContactPointTypePhone = "phone";
+        public const string ContactPointTypeEmail = "email";
     }
 }

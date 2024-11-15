@@ -76,7 +76,17 @@ namespace Proto.PatientRecordSystem.Service.Mapping
                     patient.Telecoms.Add(patientTelecom);
                 }               
             }
-            
+
+            if (!string.IsNullOrWhiteSpace(domainResource.Email))
+            {
+                var emailConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.ContactPointTypeEmail) ?? throw new InvalidResourceException();
+
+                patient.Telecoms.Add(new PatientTelecom
+                {
+                    Value = domainResource.Email,
+                    ContactSystemConceptId = emailConcept.Id
+                });
+            }
 
             return patient;
         }
