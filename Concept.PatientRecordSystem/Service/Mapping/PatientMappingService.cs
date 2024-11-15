@@ -26,9 +26,35 @@ namespace Proto.PatientRecordSystem.Service.Mapping
             patient.BirthMonth = domainResource.BirthMonth;
             patient.BirthDay = domainResource.BirthDay;
 
-            var givenNameConceptId = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeGiven);
-            var familyNameConceptId = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeFamily);
+            var givenNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeGiven) ?? throw new ArgumentNullException();
+            var familyNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeFamily) ?? throw new ArgumentNullException();
 
+        
+            patient.Individual.NameParts.Add(new NamePart
+            {
+                Value = domainResource.Name.LastName,
+                Order = 0,
+                NameTypeConceptId = familyNameConcept.Id
+            });
+            
+            patient.Individual.NameParts.Add(new NamePart
+            {
+                Value = domainResource.Name.FirstName,
+                Order = 0,
+                NameTypeConceptId = givenNameConcept.Id
+            });
+
+            if (domainResource.Name.MiddleName != null)
+            {
+                patient.Individual.NameParts.Add(new NamePart
+                {
+                    Value = domainResource.Name.MiddleName,
+                    Order = 1,
+                    NameTypeConceptId = givenNameConcept.Id
+                });
+            }
+
+            
 
             return patient;
         }

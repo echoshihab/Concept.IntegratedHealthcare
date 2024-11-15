@@ -10,8 +10,7 @@ namespace Proto.PatientRecordSystem.DTOs
         public ushort BirthMonth { get; set; }
         public ushort BirthDay { get; set; }
 
-        [Required]
-        public Name? Name { get; set; }
+        public required Name Name { get; set; }
 
         public List<ContactPhone> PhoneNumbers { get;set;} = new List<ContactPhone>();
 
