@@ -88,6 +88,26 @@ namespace Proto.PatientRecordSystem.Service.Mapping
                 });
             }
 
+            if (domainResource.Language != null)
+            {
+                var preferredLanguageConcept = await this._conceptService.RetreiveConceptAsync(domainResource.Language.Preferred) ?? throw new InvalidResourceException();
+
+                patient.Languages.Add(new PatientLanguage
+                {
+                    LanguageConceptId = preferredLanguageConcept.Id,
+                });
+
+                if (!string.IsNullOrWhiteSpace(domainResource.Language.Alternate))
+                {
+                    var alternateLanguageConcept = await this._conceptService.RetreiveConceptAsync(domainResource.Language.Alternate) ?? throw new InvalidResourceException();
+
+                    patient.Languages.Add(new PatientLanguage
+                    {
+                        LanguageConceptId = alternateLanguageConcept.Id,
+                    });
+                }
+            }
+
             return patient;
         }
 

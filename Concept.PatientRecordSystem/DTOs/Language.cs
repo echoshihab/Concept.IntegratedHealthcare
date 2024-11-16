@@ -2,7 +2,7 @@
 {
     public class Language
     {
-        public string? Preferred { get; set; } = "en";
+        public required string Preferred { get; set; } 
         public string? Alternate { get; set; }
     }
 }
