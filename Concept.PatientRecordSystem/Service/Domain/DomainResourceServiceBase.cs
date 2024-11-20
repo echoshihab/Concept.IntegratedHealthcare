@@ -1,7 +1,6 @@
 ﻿using Proto.PatientRecordSystem.DTOs;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Persistence.Service;
-using Hl7.Fhir.Model;
 
 namespace Proto.PatientRecordSystem.Service.Domain
 {

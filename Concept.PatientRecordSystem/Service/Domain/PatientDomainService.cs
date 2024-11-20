@@ -14,9 +14,9 @@ namespace Proto.PatientRecordSystem.Service.Domain
 
         public override async Task<PatientDto> CreateAsync(PatientDto domainResource)
         {
-            var patientDb = base._mappingService.MapToDatabaseModel(domainResource);
+            var patientDb = await base._mappingService.MapToDatabaseModelAsync(domainResource);
 
-            return base._mappingService.MapToDomainModel(await this._persistenceService.CreateAsync(patientDb));        
+            return await base._mappingService.MapToDomainModelAsync(await this._persistenceService.CreateAsync(patientDb));        
         }
     }
 }

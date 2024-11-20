@@ -11,7 +11,6 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
         public override Task<Patient> CreateAsync(Patient resource)
         {
-
             return base.CreateAsync(resource);
         }
     }
