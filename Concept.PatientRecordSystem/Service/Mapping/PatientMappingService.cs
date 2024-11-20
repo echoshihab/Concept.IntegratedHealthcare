@@ -18,7 +18,7 @@ namespace Proto.PatientRecordSystem.Service.Mapping
             patient.Individual = new Individual();            
             patient.Individual.Identifiers.Add(new Identifier { System = ApplicationConstants.InhIdentifierSystemMrn, Value = domainResource.Mrn });
             
-            var genderConcept = await this._conceptService.RetreiveConceptAsync(domainResource.Gender) ?? throw new InvalidResourceException("Invalid Gender");
+            var genderConcept = await this._conceptService.RetreiveConceptAsync(domainResource.Gender.ToString()) ?? throw new InvalidResourceException("Invalid Gender");
             
             patient.GenderConcept = genderConcept;
 
