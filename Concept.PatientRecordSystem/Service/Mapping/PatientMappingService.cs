@@ -1,4 +1,5 @@
 ﻿using Proto.PatientRecordSystem.DTOs;
+using Proto.PatientRecordSystem.Enums;
 using Proto.PatientRecordSystem.Exceptions;
 using Proto.PatientRecordSystem.Persistence.Models;
 
@@ -111,9 +112,37 @@ namespace Proto.PatientRecordSystem.Service.Mapping
             return patient;
         }
 
-        public Task<PatientDto> MapToDomainModelAsync(Patient persistenceResource)
+        public async Task<PatientDto> MapToDomainModelAsync(Patient persistenceResource)
         {
-            throw new NotImplementedException();
+            var mrn = persistenceResource.Individual.Identifiers.FirstOrDefault(i => i.System == ApplicationConstants.InhIdentifierSystemMrn )?.Value;
+
+            if (!Enum.TryParse(persistenceResource.GenderConcept.Value, out Gender gender))
+            {
+                throw new InvalidResourceException();
+            }
+
+            var givenNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeGiven) ?? throw new ArgumentNullException();
+            var familyNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeFamily) ?? throw new ArgumentNullException();
+
+            var lastName = persistenceResource.Individual.NameParts.FirstOrDefault(n => n.NameTypeConceptId == familyNameConcept.Id)?.Value ?? throw new InvalidResourceException();
+            var firstName = persistenceResource.Individual.NameParts.FirstOrDefault(n => n.NameTypeConceptId == givenNameConcept.Id && n.Order == 0)?.Value ?? throw new InvalidResourceException();
+            var middleNAme = persistenceResource.Individual.NameParts.FirstOrDefault(n => n.NameTypeConceptId == givenNameConcept.Id && n.Order == 1)?.Value;
+
+            var name = new Name
+            {
+                FirstName = firstName,
+                MiddleName = middleNAme,
+                LastName = lastName,
+            };
+
+            var patient = new PatientDto
+            {
+                Mrn = mrn,
+                Gender = gender,
+                Name = name
+            };
+
+            return patient;
         }
     }
 }
