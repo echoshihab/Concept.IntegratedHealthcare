@@ -11,7 +11,8 @@ namespace Proto.PatientRecordSystem.Controllers.Domain
         {
         }
 
-        public virtual Task<TResource> CreateAsync(TResource resource)
+        [HttpPost]
+        public virtual Task<IActionResult> CreateAsync(TResource resource)
         {
           throw new NotImplementedException();
         }
