@@ -26,5 +26,10 @@ namespace Proto.PatientRecordSystem.Persistence.Service
                 throw new DbUpdateException($"Unable to persist data {ex.Message}");
             }
         }
+
+        public virtual Task<IEnumerable<TResource>> QueryAsync(Dictionary<string, string> queryParams)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

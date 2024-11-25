@@ -18,5 +18,10 @@ namespace Proto.PatientRecordSystem.Service.Domain
 
             return await base._mappingService.MapToDomainModelAsync(await this._persistenceService.CreateAsync(patientDb));        
         }
+
+        public override Task<IEnumerable<PatientDto>> QueryAsync(Dictionary<string, string> queryParams)
+        {
+            return base._persistenceService.qu
+        }
     }
 }
