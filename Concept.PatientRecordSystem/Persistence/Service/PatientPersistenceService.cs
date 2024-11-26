@@ -1,15 +1,18 @@
-﻿using Proto.PatientRecordSystem.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using Proto.PatientRecordSystem.DTOs;
 using Proto.PatientRecordSystem.Persistence.Models;
+using Proto.PatientRecordSystem.Service;
 
 namespace Proto.PatientRecordSystem.Persistence.Service
 {
     public class PatientPersistenceService : PersistenceServiceBase<Patient>
     {
+        private readonly IConceptService _conceptService;
         private IQuery queryParams = new PatientQuery();
 
-        public PatientPersistenceService(ApplicationDbContext context): base(context)
+        public PatientPersistenceService(ApplicationDbContext context, IConceptService conceptService): base(context)
         {
-            
+            this._conceptService = conceptService;
         }
 
         public override Task<Patient> CreateAsync(Patient resource)
@@ -17,10 +20,21 @@ namespace Proto.PatientRecordSystem.Persistence.Service
             return base.CreateAsync(resource);
         }
 
-        public override Task<IEnumerable<Patient>> QueryAsync(Dictionary<string, string> queryParams)
+        public override async Task<IEnumerable<Patient>> QueryAsync(Dictionary<string, string> queryParams)
         {
-            // TODO: map query params to PatientQuery and query db accordingly
-            // TODO: Implement convenience method in PatientQuery() that returns a built query expression
+            var baseQuery = base._context.Patients.AsQueryable();
+
+            if (queryParams.TryGetValue("gender", out var gender))
+            {
+                baseQuery = baseQuery.Where(p => p.GenderConcept.Value == gender);
+            }
+
+            var familyConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeFamily) ?? throw new ArgumentOutOfRangeException();
+
+            if (queryParams.TryGetValue("lname", out var lname))
+            {
+                baseQuery = baseQuery.Where(p => p.Individual.NameParts.Any(n => (n.Value == lname && n.NameTypeConceptId == familyConcept.Id)));
+            }
         }
     }
 

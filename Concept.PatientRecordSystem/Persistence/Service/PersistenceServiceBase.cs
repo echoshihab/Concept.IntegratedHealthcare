@@ -5,7 +5,7 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 {
     public abstract class PersistenceServiceBase<TResource> : IPersistenceService<TResource> where  TResource : IdentifiedData
     {
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         protected PersistenceServiceBase(ApplicationDbContext context)
         {
