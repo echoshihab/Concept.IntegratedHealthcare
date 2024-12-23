@@ -19,9 +19,9 @@ namespace Proto.PatientRecordSystem.Controllers.Domain
           return this.Ok(await this._domainResourceService.CreateAsync(resource));
         }
 
-        public override Task<IActionResult> QueryAsync([FromQuery] Dictionary<string, string> queryParams)
+        public override async Task<IActionResult> QueryAsync([FromQuery] Dictionary<string, string> queryParams)
         {
-            return this._domainResourceService.
+            return this.Ok(await this._domainResourceService.QueryAsync(queryParams));
         }
     }
 }
