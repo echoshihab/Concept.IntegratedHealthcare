@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Proto.PatientRecordSystem.DTOs;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service;
-using System.Globalization;
 
 namespace Proto.PatientRecordSystem.Persistence.Service
 {
@@ -55,7 +53,16 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
             return await baseQuery.ToListAsync();           
         }
-    }
 
-    
+        /// <summary>
+        /// Retrieves a patient asynchronously by its MRN.
+        /// </summary>
+        /// <param name="mrn">The unique identifier of the patient as a string.</param>
+        /// <returns>The <see cref="Patient"/> entity if found.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if no patient is found with the specified MRN.</exception>
+        public override async Task<Patient> GetAsync(string mrn)
+        {           
+            return await this._context.Patients.Where(p => p.Individual.Identifiers.Any(i => i.System == ApplicationConstants.InhIdentifierSystemMrn && i.Value == mrn)).FirstOrDefaultAsync() ?? throw new InvalidOperationException($"No patient found with MRN: {mrn}");
+        }
+    }    
 }

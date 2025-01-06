@@ -27,6 +27,16 @@ namespace Proto.PatientRecordSystem.Persistence.Service
             }
         }
 
+        /// <summary>
+        /// Retrieves resource by id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public virtual Task<TResource> GetAsync(string id)
+        {
+           throw new NotImplementedException();
+        }
+
         public virtual Task<IEnumerable<TResource>> QueryAsync(Dictionary<string, string> queryParams)
         {
             throw new NotImplementedException();

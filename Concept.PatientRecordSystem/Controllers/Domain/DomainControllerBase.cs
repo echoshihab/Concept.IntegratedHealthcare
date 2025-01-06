@@ -15,6 +15,14 @@ namespace Proto.PatientRecordSystem.Controllers.Domain
           throw new NotImplementedException();
         }
 
+        [HttpGet("{id}")]
+        public virtual Task<IActionResult> GetAsync(string id) 
+        { 
+          throw new NotImplementedException(); 
+        } 
+            
+
+        [HttpGet]
         public virtual Task<IActionResult> QueryAsync([FromQuery] Dictionary<string,string> queryParams) 
         {
             throw new NotImplementedException();

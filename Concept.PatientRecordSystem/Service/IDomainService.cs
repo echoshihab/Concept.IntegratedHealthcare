@@ -10,5 +10,7 @@ namespace Proto.PatientRecordSystem.Service
         Task<TDomain> CreateAsync(TDomain resource);
 
         Task<IEnumerable<TDomain>> QueryAsync(Dictionary<string, string> queryParams);
+
+        Task<TDomain> GetAsync(string id);
     }
 }

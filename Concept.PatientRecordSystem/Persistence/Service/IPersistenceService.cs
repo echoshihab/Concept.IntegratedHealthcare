@@ -6,6 +6,8 @@ namespace Proto.PatientRecordSystem.Persistence.Service
     {
         Task<TResource> CreateAsync(TResource resource);
 
+        Task<TResource> GetAsync(string id);
+
         Task<IEnumerable<TResource>> QueryAsync(Dictionary<string, string> queryPrams);
     }
 }

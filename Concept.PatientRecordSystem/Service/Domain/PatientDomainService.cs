@@ -23,5 +23,10 @@ namespace Proto.PatientRecordSystem.Service.Domain
             var dbPatients = await this._persistenceService.QueryAsync(queryParams);
             return await Task.WhenAll(dbPatients.Select(async p => await base._mappingService.MapToDomainModelAsync(p)));                    
         }
+
+        public override async Task<PatientDto> GetAsync(string mrn)
+        {
+            return await base._mappingService.MapToDomainModelAsync(await this._persistenceService.GetAsync(mrn));
+        }
     }
 }
