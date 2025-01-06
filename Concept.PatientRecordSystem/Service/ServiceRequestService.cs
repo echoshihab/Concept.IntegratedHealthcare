@@ -1,12 +1,11 @@
-﻿using Proto.PatientRecordSystem.Exceptions;
-using Proto.PatientRecordSystem.Persistence;
-using Proto.PatientRecordSystem.Persistence.Models;
-using Firely.Fhir.Packages;
+﻿using Firely.Fhir.Packages;
 using Firely.Fhir.Validation;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
 using Microsoft.EntityFrameworkCore;
+using Proto.PatientRecordSystem.Exceptions;
+using Proto.PatientRecordSystem.Persistence;
 
 namespace Proto.PatientRecordSystem.Service
 {
