@@ -21,6 +21,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql
 
 var app = builder.Build();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler(exceptionHandlerApp =>
 {
@@ -49,10 +52,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapFallbackToFile("/index.html");
+
 try
 {
     DbInitializer.InitDb(app);
-} catch (Exception e)
+}
+catch (Exception e)
 {
     Console.WriteLine(e);
 }
