@@ -1,0 +1,2 @@
+TRUNCATE "Addresses", "Identifier", "Individuals", "NameParts", "PatientLanguages", "PatientTelecoms", "PatientPractitioners"
+, "Patients", "PractitionerTelecoms", "Practitioners", "ServiceRequests", "Modalities", "ProcedureDetails"
