@@ -4,6 +4,11 @@ using Proto.PatientRecordSystem.Persistence;
 using Proto.PatientRecordSystem.Service;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Proto.PatientRecordSystem.DTOs;
+using Proto.PatientRecordSystem.Service.Domain;
+using Proto.PatientRecordSystem.Persistence.Models;
+using Proto.PatientRecordSystem.Service.Mapping;
+using Proto.PatientRecordSystem.Persistence.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +19,22 @@ builder.Services.AddControllers(options =>
     options.ModelBinderProviders.Insert(0, new FhirResourceModelBinderProvider());
 });
 
+// Fhir Services
 builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Patient>, PatientResourceService>();
 builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Practitioner>, PractionerResourceService>();
+
+// Patient Domain services
+builder.Services.AddScoped<IDomainService<PatientDto, Patient>, PatientDomainService>();
+
+// Mapping Services
+builder.Services.AddScoped<IMappingService<PatientDto, Patient>, PatientMappingService>();
+
+// Concept Services
+builder.Services.AddScoped<IConceptService, ConceptService>();
+
+// Persistence Services
+builder.Services.AddScoped<IPersistenceService<Patient>, PatientPersistenceService>();
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
 
