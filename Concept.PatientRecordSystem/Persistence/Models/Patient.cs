@@ -1,5 +1,9 @@
-﻿namespace Proto.PatientRecordSystem.Persistence.Models
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Proto.PatientRecordSystem.Persistence.Models
 {
+    [Index(nameof(Mrn), IsUnique = true)]
     public class Patient : IdentifiedData
     {
         public Patient()
@@ -9,6 +13,8 @@
             this.PatientPractitioners = new HashSet<PatientPractitioner>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Mrn { get; set; }
         public Guid GenderConceptId { get; set; }
         public ushort BirthYear { get; set; }
         public ushort BirthMonth { get; set; }
