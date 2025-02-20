@@ -3,6 +3,8 @@ using Proto.PatientRecordSystem.DTOs;
 
 namespace Proto.PatientRecordSystem.Controllers.Domain
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public abstract class DomainControllerBase<TResource> : ControllerBase where TResource : IdentifiableData
     {
         public DomainControllerBase()

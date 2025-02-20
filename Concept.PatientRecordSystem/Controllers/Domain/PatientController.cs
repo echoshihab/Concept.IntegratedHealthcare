@@ -24,6 +24,7 @@ namespace Proto.PatientRecordSystem.Controllers.Domain
             return this.Ok(await this._domainResourceService.QueryAsync(queryParams));
         }
 
+        [HttpGet("{mrn}")]
         public override async Task<IActionResult> GetAsync(string mrn)
         {
             return this.Ok(await this._domainResourceService.GetAsync(mrn));

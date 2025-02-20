@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hl7.Fhir.ElementModel.Types;
+using Microsoft.EntityFrameworkCore;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service;
 
@@ -61,8 +62,13 @@ namespace Proto.PatientRecordSystem.Persistence.Service
         /// <returns>The <see cref="Patient"/> entity if found.</returns>
         /// <exception cref="InvalidOperationException">Thrown if no patient is found with the specified MRN.</exception>
         public override async Task<Patient> GetAsync(string mrn)
-        {           
-            return await this._context.Patients.Where(p => p.Individual.Identifiers.Any(i => i.System == ApplicationConstants.InhIdentifierSystemMrn && i.Value == mrn)).FirstOrDefaultAsync() ?? throw new InvalidOperationException($"No patient found with MRN: {mrn}");
+        {   
+            if (Integer.TryParse(mrn, out var patientMrn))
+            {
+                throw new FormatException("Invalid format for MRN");
+            }
+
+            return await this._context.Patients.FirstOrDefaultAsync(p => p.Mrn == patientMrn) ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
         }
     }    
 }
