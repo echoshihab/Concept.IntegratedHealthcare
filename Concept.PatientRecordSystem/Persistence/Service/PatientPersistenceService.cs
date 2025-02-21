@@ -68,7 +68,12 @@ namespace Proto.PatientRecordSystem.Persistence.Service
                 throw new FormatException("Invalid format for MRN");
             }
 
-            return await this._context.Patients.FirstOrDefaultAsync(p => p.Mrn == patientMrn) ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
+            return await this._context.Patients
+                .Include(p => p.GenderConcept)
+                .Include(p => p.Individual)
+                    .ThenInclude(i => i.NameParts)
+                .FirstOrDefaultAsync(p => p.Mrn == patientMrn) 
+                ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
         }
     }    
 }
