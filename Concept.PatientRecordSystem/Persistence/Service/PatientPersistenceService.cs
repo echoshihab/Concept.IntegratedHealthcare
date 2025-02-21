@@ -63,7 +63,7 @@ namespace Proto.PatientRecordSystem.Persistence.Service
         /// <exception cref="InvalidOperationException">Thrown if no patient is found with the specified MRN.</exception>
         public override async Task<Patient> GetAsync(string mrn)
         {   
-            if (Integer.TryParse(mrn, out var patientMrn))
+            if (!Integer.TryParse(mrn, out var patientMrn))
             {
                 throw new FormatException("Invalid format for MRN");
             }

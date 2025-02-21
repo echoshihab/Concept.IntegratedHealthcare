@@ -15,10 +15,9 @@ namespace Proto.PatientRecordSystem.Service.Mapping
         }
         public async Task<Patient> MapToDatabaseModelAsync(PatientDto domainResource)
         {
-            var patient  = new Patient();
-            patient.Individual = new Individual();            
-            patient.Individual.Identifiers.Add(new Identifier { System = ApplicationConstants.InhIdentifierSystemMrn, Value = domainResource.Mrn });
-            
+            var patient  = new Patient();          
+            patient.Individual = new Individual();     
+                     
             var genderConcept = await this._conceptService.RetreiveConceptAsync(domainResource.Gender.ToString()) ?? throw new InvalidResourceException("Invalid Gender");
             
             patient.GenderConcept = genderConcept;
@@ -114,7 +113,6 @@ namespace Proto.PatientRecordSystem.Service.Mapping
 
         public async Task<PatientDto> MapToDomainModelAsync(Patient persistenceResource)
         {
-            var mrn = persistenceResource.Individual.Identifiers.FirstOrDefault(i => i.System == ApplicationConstants.InhIdentifierSystemMrn )?.Value;
 
             if (!Enum.TryParse(persistenceResource.GenderConcept.Value, out Gender gender))
             {
@@ -137,7 +135,7 @@ namespace Proto.PatientRecordSystem.Service.Mapping
 
             var patient = new PatientDto
             {
-                Mrn = mrn,
+                Mrn = persistenceResource.Mrn.ToString(),
                 Gender = gender,
                 Name = name
             };
