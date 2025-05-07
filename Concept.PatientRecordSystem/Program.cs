@@ -36,7 +36,16 @@ builder.Services.AddScoped<IConceptService, ConceptService>();
 builder.Services.AddScoped<IPersistenceService<Patient>, PatientPersistenceService>();
 
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext")));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DbContext"));
+    options.UseLoggerFactory(LoggerFactory.Create(loggerOptions =>
+    {
+        loggerOptions.AddDebug();
+        loggerOptions.AddConsole();
+    }));
+}); 
+
 
 var app = builder.Build();
 
