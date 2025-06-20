@@ -99,8 +99,8 @@ namespace Proto.PatientRecordSystem.Persistence
                     IndividualTypeConceptId = individualTypePractitionerId,
                     NameParts = new List<NamePart>()
                     {
-                        new() { NameTypeConceptId = givenNameConceptId, Value = "John", Order = 0 },
-                        new() { NameTypeConceptId = familyNameConceptId, Value = "Johnson" }
+                        new() { NameTypeConceptId = givenNameConceptId, Value = "john", Order = 0 },
+                        new() { NameTypeConceptId = familyNameConceptId, Value = "johnson" }
                     },
                     Identifiers = new List<Identifier>()
                     {
@@ -113,8 +113,8 @@ namespace Proto.PatientRecordSystem.Persistence
                     IndividualTypeConceptId = individualTypePractitionerId,
                     NameParts = new List<NamePart>()
                     {
-                        new() { NameTypeConceptId = givenNameConceptId, Value = "Obrien", Order = 0 },
-                        new() { NameTypeConceptId = familyNameConceptId, Value = "McDonald" }
+                        new() { NameTypeConceptId = givenNameConceptId, Value = "obrien", Order = 0 },
+                        new() { NameTypeConceptId = familyNameConceptId, Value = "mcDonald" }
                     },
                     Identifiers = new List<Identifier>()
                     {
@@ -158,8 +158,8 @@ namespace Proto.PatientRecordSystem.Persistence
                     IndividualTypeConceptId = Guid.Parse("0582e424-c9c0-4e6b-a922-0dd16fb68aea"),
                     NameParts = new List<NamePart>()
                     {
-                        new() { NameTypeConceptId = givenNameConceptId, Value = "James", Order = 0 },
-                        new() { NameTypeConceptId = familyNameConceptId, Value = "Drogo" }
+                        new() { NameTypeConceptId = givenNameConceptId, Value = "james", Order = 0 },
+                        new() { NameTypeConceptId = familyNameConceptId, Value = "drogo" }
                     },
                     Identifiers = new List<Identifier>()
                     {

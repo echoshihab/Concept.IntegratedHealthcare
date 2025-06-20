@@ -36,17 +36,17 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
             var givenConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeGiven) ?? throw new ArgumentOutOfRangeException();
 
-            if (queryParams.TryGetValue("lName", out var lName))
+            if (queryParams.TryGetValue("lastName", out var lName) && lName is not null)
             {
                 baseQuery = baseQuery.Where(p => p.Individual.NameParts.Any(n => (n.Value == lName && n.NameTypeConceptId == familyConcept.Id)));
             }
 
-            if (queryParams.TryGetValue("fName", out var fname))
+            if (queryParams.TryGetValue("firstName", out var fname) && fname is not null)
             {
                 baseQuery = baseQuery.Where(p => p.Individual.NameParts.Any(n => (n.Value == fname && n.NameTypeConceptId == givenConcept.Id && n.Order == 0)));
             }
 
-            if (queryParams.TryGetValue("mName", out var mName))
+            if (queryParams.TryGetValue("middleName", out var mName) && mName is not null)
             {
                 baseQuery = baseQuery.Where(p => p.Individual.NameParts.Any(n => (n.Value == fname && n.NameTypeConceptId == givenConcept.Id && n.Order == 1)));
             }
