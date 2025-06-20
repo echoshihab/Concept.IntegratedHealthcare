@@ -21,9 +21,13 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
         public override async Task<IEnumerable<Patient>> QueryAsync(Dictionary<string, string> queryParams)
         {
-            var baseQuery = base._context.Patients.AsQueryable();
+            var baseQuery = base._context.Patients
+                .Include(p => p.GenderConcept)
+                .Include(p => p.Individual)
+                .ThenInclude(i => i.NameParts)               
+                .AsQueryable();
 
-            if (queryParams.TryGetValue("gender", out var gender))
+            if (queryParams.TryGetValue("gender", out var gender) && gender is not null)
             {
                 baseQuery = baseQuery.Where(p => p.GenderConcept.Value == gender);
             }
