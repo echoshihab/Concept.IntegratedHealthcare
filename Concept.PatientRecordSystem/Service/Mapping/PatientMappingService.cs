@@ -137,7 +137,10 @@ namespace Proto.PatientRecordSystem.Service.Mapping
             {
                 Mrn = persistenceResource.Mrn.ToString(),
                 Gender = gender,
-                Name = name
+                Name = name,
+                BirthDay = persistenceResource.BirthDay,
+                BirthMonth = persistenceResource.BirthMonth,
+                BirthYear = persistenceResource.BirthYear,
             };
 
             return patient;
