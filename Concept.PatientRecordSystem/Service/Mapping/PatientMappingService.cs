@@ -136,7 +136,7 @@ namespace Proto.PatientRecordSystem.Service.Mapping
             var patient = new PatientDto
             {
                 Mrn = persistenceResource.Mrn.ToString(),
-                Gender = gender,
+                Gender = gender.ToString(),
                 Name = name,
                 BirthDay = persistenceResource.BirthDay,
                 BirthMonth = persistenceResource.BirthMonth,

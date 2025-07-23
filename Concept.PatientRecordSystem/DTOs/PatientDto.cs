@@ -4,8 +4,8 @@ namespace Proto.PatientRecordSystem.DTOs
 {
     public class PatientDto : IdentifiableData
     {
-        public required string Mrn { get; set; }        
-        public required Gender Gender { get; set; }
+        public string? Mrn { get; set; }        
+        public string? Gender { get; set; }
         public ushort BirthYear { get; set; }
         public ushort BirthMonth { get; set; }
         public ushort BirthDay { get; set; }
