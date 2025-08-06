@@ -9,6 +9,8 @@ namespace Proto.PatientRecordSystem.Persistence.Service
     {
         private readonly IConceptService _conceptService;
 
+        private readonly Guid patientTypeConceptId = Guid.Parse("0582e424-c9c0-4e6b-a922-0dd16fb68aea");
+
         public PatientPersistenceService(ApplicationDbContext context, IConceptService conceptService): base(context)
         {
             this._conceptService = conceptService;
@@ -16,6 +18,7 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
         public override Task<Patient> CreateAsync(Patient resource)
         {
+            resource.Individual.IndividualTypeConceptId = this.patientTypeConceptId;
             return base.CreateAsync(resource);
         }
 
