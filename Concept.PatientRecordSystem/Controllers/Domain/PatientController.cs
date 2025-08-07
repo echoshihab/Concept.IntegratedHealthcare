@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hl7.Fhir.Model;
+using Microsoft.AspNetCore.Mvc;
 using Proto.PatientRecordSystem.DTOs;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service;
@@ -17,6 +18,13 @@ namespace Proto.PatientRecordSystem.Controllers.Domain
         public override async Task<IActionResult> CreateAsync(PatientDto resource)
         {
           return this.Ok(await this._domainResourceService.CreateAsync(resource));
+        }
+
+
+        public override Task<IActionResult> UpdateAsync(string mrn, PatientDto resource)
+        {
+            // todo
+            return this.Ok(await this._domainResourceService.(resource));
         }
 
         public override async Task<IActionResult> QueryAsync([FromQuery] Dictionary<string, string> queryParams)

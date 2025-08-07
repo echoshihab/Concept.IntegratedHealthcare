@@ -25,6 +25,11 @@ namespace Proto.PatientRecordSystem.Service.Domain
             throw new NotImplementedException();            
         }
 
+        public virtual Task<TDomain> UpdateAsync(string id, TDomain resource)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual Task<IEnumerable<TDomain>> QueryAsync(Dictionary<string, string> queryParams)
         {
             throw new NotImplementedException();

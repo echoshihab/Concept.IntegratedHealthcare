@@ -82,5 +82,31 @@ namespace Proto.PatientRecordSystem.Persistence.Service
                 .FirstOrDefaultAsync(p => p.Mrn == patientMrn) 
                 ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
         }
+
+
+        public override async Task<Patient> UpdateAsync(string mrn, Patient resource)
+        {
+            if (!Integer.TryParse(mrn, out var patientMrn))
+            {
+                throw new FormatException("Invalid format for MRN");
+            }
+
+            resource.Individual.IndividualTypeConceptId = this.patientTypeConceptId;       
+            
+            var patientDb =  await this._context.Patients.FirstOrDefaultAsync(p => p.Mrn == patientMrn) ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
+            
+
+            patientDb.BirthDay = resource.BirthDay;
+            patientDb.BirthMonth = resource.BirthMonth;
+            patientDb.BirthYear = resource.BirthYear;
+            
+            // TODO
+                
+
+            _context.Entry(patientDb).CurrentValues.SetValues(resource);
+
+            await _context.SaveChangesAsync();
+            return resource;
+        }
     }    
 }

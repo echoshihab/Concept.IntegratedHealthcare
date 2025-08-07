@@ -41,5 +41,11 @@ namespace Proto.PatientRecordSystem.Persistence.Service
         {
             throw new NotImplementedException();
         }
+
+        public virtual Task<TResource> UpdateAsync(string id, TResource resource)
+        {
+
+            throw new NotImplementedException();
+        }
     }
 }

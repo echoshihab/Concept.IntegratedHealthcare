@@ -21,8 +21,14 @@ namespace Proto.PatientRecordSystem.Controllers.Domain
         public virtual Task<IActionResult> GetAsync(string id) 
         { 
           throw new NotImplementedException(); 
-        } 
-            
+        }
+
+        [HttpPut("{id}")]
+        public virtual Task<IActionResult> UpdateAsync(string id, TResource resource)
+        {
+            throw new NotImplementedException();
+        }
+
 
         [HttpGet]
         public virtual Task<IActionResult> QueryAsync([FromQuery] Dictionary<string,string> queryParams) 
