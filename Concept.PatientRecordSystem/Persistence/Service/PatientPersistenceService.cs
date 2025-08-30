@@ -1,5 +1,6 @@
 ﻿using Hl7.Fhir.ElementModel.Types;
 using Microsoft.EntityFrameworkCore;
+using Proto.PatientRecordSystem.Exceptions;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service;
 
@@ -91,20 +92,22 @@ namespace Proto.PatientRecordSystem.Persistence.Service
                 throw new FormatException("Invalid format for MRN");
             }
 
-            resource.Individual.IndividualTypeConceptId = this.patientTypeConceptId;       
-            
-            var patientDb =  await this._context.Patients.FirstOrDefaultAsync(p => p.Mrn == patientMrn) ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
-            
+            resource.Individual.IndividualTypeConceptId = this.patientTypeConceptId;
+
+            var patientDb = await this._context.Patients.Include(p => p.Individual).FirstOrDefaultAsync(p => p.Mrn == patientMrn) 
+                ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
 
             patientDb.BirthDay = resource.BirthDay;
             patientDb.BirthMonth = resource.BirthMonth;
             patientDb.BirthYear = resource.BirthYear;
-            
-            // TODO
-                
 
-            _context.Entry(patientDb).CurrentValues.SetValues(resource);
+            patientDb.GenderConcept = resource.GenderConcept;       
 
+            var givenNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeGiven) ?? throw new ArgumentNullException();
+            var familyNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeFamily) ?? throw new ArgumentNullException();
+
+            patientDb.Individual.NameParts = resource.Individual.NameParts;
+           
             await _context.SaveChangesAsync();
             return resource;
         }

@@ -1,5 +1,4 @@
-﻿using Hl7.Fhir.Model;
-using Proto.PatientRecordSystem.DTOs;
+﻿using Proto.PatientRecordSystem.DTOs;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Persistence.Service;
 
@@ -35,7 +34,7 @@ namespace Proto.PatientRecordSystem.Service.Domain
         public override async Task<PatientDto> UpdateAsync(string mrn, PatientDto resource)
         {
             var patientDb = await base._mappingService.MapToDatabaseModelAsync(resource);
-            return await base._mappingService.MapToDomainModelAsync(await this._persistenceService.UpdateAsync(patientDb));
+            return await base._mappingService.MapToDomainModelAsync(await this._persistenceService.UpdateAsync(mrn, patientDb));
         }
     }
 }

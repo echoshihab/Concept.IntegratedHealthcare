@@ -44,7 +44,6 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
         public virtual Task<TResource> UpdateAsync(string id, TResource resource)
         {
-
             throw new NotImplementedException();
         }
     }
