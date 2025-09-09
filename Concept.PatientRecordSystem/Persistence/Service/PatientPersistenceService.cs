@@ -99,12 +99,14 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
             patientDb.BirthDay = resource.BirthDay;
             patientDb.BirthMonth = resource.BirthMonth;
-            patientDb.BirthYear = resource.BirthYear;
-
             patientDb.GenderConcept = resource.GenderConcept;       
 
             var givenNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeGiven) ?? throw new ArgumentNullException();
             var familyNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeFamily) ?? throw new ArgumentNullException();
+
+
+            // temp hack fix to update nameparts
+            _context.NameParts.RemoveRange(_context.NameParts.Where(np => np.IndividualId == patientDb.IndividualId));
 
             patientDb.Individual.NameParts = resource.Individual.NameParts;
            
