@@ -94,23 +94,45 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
             resource.Individual.IndividualTypeConceptId = this.patientTypeConceptId;
 
-            var patientDb = await this._context.Patients.Include(p => p.Individual).FirstOrDefaultAsync(p => p.Mrn == patientMrn) 
-                ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
+            var patientDb = await this._context.Patients.Include(p => p.Individual).ThenInclude(n => n.NameParts).
+                                FirstOrDefaultAsync(p => p.Mrn == patientMrn) ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
 
             patientDb.BirthDay = resource.BirthDay;
             patientDb.BirthMonth = resource.BirthMonth;
-            patientDb.GenderConcept = resource.GenderConcept;       
+            patientDb.GenderConcept = resource.GenderConcept;
 
-            var givenNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeGiven) ?? throw new ArgumentNullException();
-            var familyNameConcept = await this._conceptService.RetreiveConceptAsync(ApplicationConstants.NameTypeFamily) ?? throw new ArgumentNullException();
+            var existingNames = patientDb.Individual.NameParts.ToList();
+            var updatedNames = resource.Individual.NameParts.ToList();
 
+            foreach (var namePart in existingNames)
+            {
+                var match = updatedNames.FirstOrDefault(n => n.NameTypeConceptId == namePart.NameTypeConceptId && n.Order == namePart.Order);
 
-            // temp hack fix to update nameparts
-            _context.NameParts.RemoveRange(_context.NameParts.Where(np => np.IndividualId == patientDb.IndividualId));
+                if (match == null)
+                {
+                    // update removes the name
+                    this._context.NameParts.Remove(namePart);  
+                    continue;
+                }
 
-            patientDb.Individual.NameParts = resource.Individual.NameParts;
-           
-            await _context.SaveChangesAsync();
+                namePart.Value = match.Value;
+
+                // removing processed names
+                updatedNames.Remove(match);
+            }
+
+            // add the remnant new names from updated names if any
+            foreach (var newNamePart in updatedNames)
+            {
+                patientDb.Individual.NameParts.Add(new NamePart()
+                {
+                    NameTypeConceptId = newNamePart.NameTypeConceptId,
+                    Order = newNamePart.Order,
+                    Value = newNamePart.Value
+                });
+            }
+
+            await this._context.SaveChangesAsync();
             return resource;
         }
     }    
