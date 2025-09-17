@@ -99,6 +99,8 @@ namespace Proto.PatientRecordSystem.Persistence.Service
 
             patientDb.BirthDay = resource.BirthDay;
             patientDb.BirthMonth = resource.BirthMonth;
+            patientDb.BirthYear = resource.BirthYear;
+
             patientDb.GenderConcept = resource.GenderConcept;
 
             var existingNames = patientDb.Individual.NameParts.ToList();
