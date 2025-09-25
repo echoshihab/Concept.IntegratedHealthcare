@@ -9,6 +9,7 @@ using Proto.PatientRecordSystem.Service.Domain;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service.Mapping;
 using Proto.PatientRecordSystem.Persistence.Service;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,22 @@ builder.Services.AddControllers(options =>
 // Fhir Services
 builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Patient>, PatientResourceService>();
 builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Practitioner>, PractionerResourceService>();
+
+// Rabbitmq
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
 
 // Patient Domain services
 builder.Services.AddScoped<IDomainService<PatientDto, Patient>, PatientDomainService>();
@@ -44,7 +61,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         loggerOptions.AddDebug();
         loggerOptions.AddConsole();
     }));
-}); 
+});
 
 
 var app = builder.Build();
@@ -61,10 +78,10 @@ app.UseExceptionHandler(exceptionHandlerApp =>
 
         var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-        if(exceptionHandlerPathFeature?.Error is InvalidResourceException)
+        if (exceptionHandlerPathFeature?.Error is InvalidResourceException)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await context.Response.WriteAsJsonAsync(exceptionHandlerPathFeature?.Error.Message);   
+            await context.Response.WriteAsJsonAsync(exceptionHandlerPathFeature?.Error.Message);
         }
         else if (exceptionHandlerPathFeature?.Error is Exception)
         {
