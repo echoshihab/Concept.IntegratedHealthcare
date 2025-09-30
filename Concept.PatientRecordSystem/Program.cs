@@ -10,6 +10,7 @@ using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service.Mapping;
 using Proto.PatientRecordSystem.Persistence.Service;
 using MassTransit;
+using Proto.PatientRecordSystem.Service.Mapping.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

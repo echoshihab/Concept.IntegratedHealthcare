@@ -2,6 +2,7 @@
 using Proto.PatientRecordSystem.Enums;
 using Proto.PatientRecordSystem.Exceptions;
 using Proto.PatientRecordSystem.Persistence.Models;
+using Proto.PatientRecordSystem.Service.Mapping.Interfaces;
 
 namespace Proto.PatientRecordSystem.Service.Mapping
 {
@@ -13,7 +14,7 @@ namespace Proto.PatientRecordSystem.Service.Mapping
         {
             _conceptService = conceptService;
         }
-        public async Task<Patient> MapToDatabaseModelAsync(PatientDto domainResource)
+        public async Task<Patient> MapToDbModelAsync(PatientDto domainResource)
         {
             var patient  = new Patient();          
             patient.Individual = new Individual();     

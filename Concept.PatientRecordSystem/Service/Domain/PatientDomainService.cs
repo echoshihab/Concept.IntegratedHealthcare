@@ -1,6 +1,7 @@
 ﻿using Proto.PatientRecordSystem.DTOs;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Persistence.Service;
+using Proto.PatientRecordSystem.Service.Mapping.Interfaces;
 
 namespace Proto.PatientRecordSystem.Service.Domain
 {
@@ -14,7 +15,7 @@ namespace Proto.PatientRecordSystem.Service.Domain
 
         public override async Task<PatientDto> CreateAsync(PatientDto domainResource)
         {
-            var patientDb = await base._mappingService.MapToDatabaseModelAsync(domainResource);
+            var patientDb = await base._mappingService.MapToDbModelAsync(domainResource);
             return await base._mappingService.MapToDomainModelAsync(await this._persistenceService.CreateAsync(patientDb));        
         }       
 
@@ -33,7 +34,7 @@ namespace Proto.PatientRecordSystem.Service.Domain
 
         public override async Task<PatientDto> UpdateAsync(string mrn, PatientDto resource)
         {
-            var patientDb = await base._mappingService.MapToDatabaseModelAsync(resource);
+            var patientDb = await base._mappingService.MapToDbModelAsync(resource);
             return await base._mappingService.MapToDomainModelAsync(await this._persistenceService.UpdateAsync(mrn, patientDb));
         }
     }

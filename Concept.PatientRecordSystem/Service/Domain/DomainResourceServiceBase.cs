@@ -1,6 +1,7 @@
 ﻿using Proto.PatientRecordSystem.DTOs;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Persistence.Service;
+using Proto.PatientRecordSystem.Service.Mapping.Interfaces;
 
 namespace Proto.PatientRecordSystem.Service.Domain
 {

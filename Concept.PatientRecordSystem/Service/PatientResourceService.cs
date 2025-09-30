@@ -9,14 +9,16 @@ using Hl7.Fhir.Specification.Source;
 using Hl7.Fhir.Specification.Terminology;
 using Hl7.Fhir.Utility;
 using Microsoft.EntityFrameworkCore;
+using MassTransit;
 
 namespace Proto.PatientRecordSystem.Service
 {
     public class PatientResourceService : ResourcePersistenceServiceBase<Hl7.Fhir.Model.Patient>
     {
+
         public PatientResourceService(ApplicationDbContext context): base(context)
-        {
-            
+        {            
+
         }
 
         public override async Task<Hl7.Fhir.Model.Patient> CreateAsync(Hl7.Fhir.Model.Patient patient)
