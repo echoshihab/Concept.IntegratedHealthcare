@@ -7,6 +7,7 @@ namespace Proto.PatientRecordSystem.Service
     public interface IConceptService
     {
         public Task<Concept?> RetreiveConceptAsync(string value);
+        public Task<Concept?> RetreiveConceptByIdAsync(Guid guid);
 
     }
 }
