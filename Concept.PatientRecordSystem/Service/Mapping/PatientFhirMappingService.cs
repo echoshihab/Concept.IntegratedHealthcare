@@ -1,4 +1,5 @@
-﻿using Proto.PatientRecordSystem.Persistence.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service.Mapping.Interfaces;
 
 namespace Proto.PatientRecordSystem.Service.Mapping
@@ -46,7 +47,7 @@ namespace Proto.PatientRecordSystem.Service.Mapping
                 Given = individual.NameParts.Where(c => c.NameTypeConceptId == givenNameConceptId).OrderBy(c => c.Order).Select(c => c.Value),
             });
 
-            // Language            
+            // Language - take the first language for now           
             var patientLanguage  = persistentResource.Languages?.FirstOrDefault();
 
             if (patientLanguage != null ) {
@@ -63,6 +64,34 @@ namespace Proto.PatientRecordSystem.Service.Mapping
                         }
                 });
             }
+
+            // Telecom
+            var phoneConceptId = (await _conceptService.RetreiveConceptAsync("phone"))?.Id ?? throw new NullReferenceException();            
+
+            var emailConceptId = (await _conceptService.RetreiveConceptAsync("email"))?.Id ?? throw new NullReferenceException();
+
+            var phone = persistentResource.Telecoms.FirstOrDefault(c => c.ContactSystemConcept.Id == phoneConceptId);
+
+            if (phone != null)
+            {
+                var phoneContactPointUseConcept = (await _conceptService.RetreiveConceptByIdAsync(phone.ContactPointUseConceptId))?.Value ?? throw new NullReferenceException();
+
+                if (Enum.TryParse<Hl7.Fhir.Model.ContactPoint.ContactPointUse>(phoneContactPointUseConcept, out var phoneContactPointUse))
+                {
+                    fhirPatient.Telecom.Add(new Hl7.Fhir.Model.ContactPoint
+                    {
+                        System = Hl7.Fhir.Model.ContactPoint.ContactPointSystem.Phone,
+                        Value = phone.Value,
+                        UseElement =
+                    {
+                        Value = phoneContactPointUse
+                    }
+                    });
+                }
+                
+            }
+
+
 
             return fhirPatient;
             }            
