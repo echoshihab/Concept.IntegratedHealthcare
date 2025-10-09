@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Proto.PatientRecordSystem.Persistence.Models;
+﻿using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service.Mapping.Interfaces;
 
 namespace Proto.PatientRecordSystem.Service.Mapping
@@ -70,27 +69,45 @@ namespace Proto.PatientRecordSystem.Service.Mapping
 
             var emailConceptId = (await _conceptService.RetreiveConceptAsync("email"))?.Id ?? throw new NullReferenceException();
 
-            var phone = persistentResource.Telecoms.FirstOrDefault(c => c.ContactSystemConcept.Id == phoneConceptId);
+            var phoneContactPoint = persistentResource.Telecoms.FirstOrDefault(c => c.ContactSystemConcept.Id == phoneConceptId);
 
-            if (phone != null)
+            if (phoneContactPoint != null)
             {
-                var phoneContactPointUseConcept = (await _conceptService.RetreiveConceptByIdAsync(phone.ContactPointUseConceptId))?.Value ?? throw new NullReferenceException();
+                var phoneContactPointUseConcept = (await _conceptService.RetreiveConceptByIdAsync(phoneContactPoint.ContactPointUseConceptId))?.Value ?? throw new NullReferenceException();
 
                 if (Enum.TryParse<Hl7.Fhir.Model.ContactPoint.ContactPointUse>(phoneContactPointUseConcept, out var phoneContactPointUse))
                 {
                     fhirPatient.Telecom.Add(new Hl7.Fhir.Model.ContactPoint
                     {
                         System = Hl7.Fhir.Model.ContactPoint.ContactPointSystem.Phone,
-                        Value = phone.Value,
+                        Value = phoneContactPoint.Value,
                         UseElement =
                     {
                         Value = phoneContactPointUse
                     }
                     });
                 }
-                
-            }
+                         
+   
+            var emailContactPoint  = persistentResource.Telecoms.FirstOrDefault(c => c.ContactPointUseConcept.Id == emailConceptId);
+            
+            if (emailContactPoint != null) 
+            {
+                    var emailContactPointUseConcept = (await _conceptService.RetreiveConceptByIdAsync(emailContactPoint.ContactPointUseConceptId))?.Value ?? throw new NullReferenceException();
 
+                    if (Enum.TryParse<Hl7.Fhir.Model.ContactPoint.ContactPointUse>(emailContactPointUseConcept, out var emailContactPointUse))
+                    {
+                        fhirPatient.Telecom.Add(new Hl7.Fhir.Model.ContactPoint
+                        {
+                            System = Hl7.Fhir.Model.ContactPoint.ContactPointSystem.Email,
+                            Value = emailContactPoint.Value,
+                            UseElement =
+                            {
+                                Value = emailContactPointUse
+                            }
+                        });
+                    }
+            }
 
 
             return fhirPatient;
