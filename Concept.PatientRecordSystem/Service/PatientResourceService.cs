@@ -187,7 +187,7 @@ namespace Proto.PatientRecordSystem.Service
 
                         if (address.Line.Any())
                         {
-                            patientDbAddress.Lines = address.Line.ToList();
+                            patientDbAddress.Lines = [.. address.Line];
                         }
 
                         if (address.City != null)
