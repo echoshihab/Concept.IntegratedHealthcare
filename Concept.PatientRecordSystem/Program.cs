@@ -11,7 +11,7 @@ using Proto.PatientRecordSystem.Service.Mapping;
 using Proto.PatientRecordSystem.Persistence.Service;
 using MassTransit;
 using Proto.PatientRecordSystem.Service.Mapping.Interfaces;
-using Hl7.Fhir.Model;
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,14 +41,12 @@ builder.Services.AddMassTransit(x =>
         {
             x.SetEntityName("Inh.FhirResource");
         });
-
+               
 
         cfg.Publish<Resource>(p =>
         {
-            p.ExchangeType = "direct";
-            p.Durable = false;
-            // TODO set set routing keys
-         
+            p.ExchangeType = ExchangeType.Direct;
+            p.Durable = false;                                                 
         });
 
         cfg.ConfigureEndpoints(context);

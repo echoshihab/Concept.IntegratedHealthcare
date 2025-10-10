@@ -2,6 +2,8 @@
 {
     public interface IMappingService<TDomainResource, TPersistenceResource>
     {
-        Task<TDomainResource> MapToDomainModelAsync(TPersistenceResource persistenceResource);       
+        Task<TDomainResource> MapToDomainModelAsync(TPersistenceResource persistenceResource);
+        Task<TPersistenceResource> MapToDbModelAsync(TDomainResource domainResource);
+
     }
 }
