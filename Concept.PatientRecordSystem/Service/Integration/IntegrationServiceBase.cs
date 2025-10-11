@@ -15,11 +15,11 @@ namespace Proto.PatientRecordSystem.Service.Integration
             _resourceQueueService = resourceQueueService;
         }
 
-        public async virtual void Send(TDbEntity dbEntity)
+        public async virtual Task SendAsync(TDbEntity dbEntity)
         {
             var fhirResource = await _fhirMappingService.MapToFhirResourceAsync(dbEntity);
 
-            _resourceQueueService.publish(fhirResource);
+            await _resourceQueueService.PublishAsync(fhirResource);
         }
     }
 }

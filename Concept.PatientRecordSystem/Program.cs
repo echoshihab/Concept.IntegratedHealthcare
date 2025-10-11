@@ -37,13 +37,13 @@ builder.Services.AddMassTransit(x =>
             h.Password("guest");
         });
 
-        cfg.Message<Resource>(x =>
+        cfg.Message<Hl7.Fhir.Model.Resource>(x =>
         {
             x.SetEntityName("Inh.FhirResource");
         });
                
 
-        cfg.Publish<Resource>(p =>
+        cfg.Publish<Hl7.Fhir.Model.Resource>(p =>
         {
             p.ExchangeType = ExchangeType.Direct;
             p.Durable = false;                                                 

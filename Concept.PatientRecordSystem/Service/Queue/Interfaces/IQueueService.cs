@@ -2,6 +2,6 @@
 {
     public interface IResourceQueueService<TResource>
     {
-        void publish(TResource resource);
+        Task PublishAsync(TResource resource);
     }
 }

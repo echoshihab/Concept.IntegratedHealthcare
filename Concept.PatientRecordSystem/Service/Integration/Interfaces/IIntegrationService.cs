@@ -2,6 +2,6 @@
 {
     public interface IIntegrationService<TDbEntity>
     {
-        void Send(TDbEntity dbEntity);
+        Task SendAsync(TDbEntity dbEntity);
     }
 }

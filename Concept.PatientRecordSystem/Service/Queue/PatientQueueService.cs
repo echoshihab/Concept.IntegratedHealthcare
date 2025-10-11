@@ -7,7 +7,7 @@ namespace Proto.PatientRecordSystem.Service.Queue
     {
         public PatientQueueService(IPublishEndpoint publishEndpoint) : base(publishEndpoint)
         {
-            
+            base.routingKey = nameof(Patient);
         }
     }
 }
