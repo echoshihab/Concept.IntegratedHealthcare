@@ -13,9 +13,11 @@ namespace Proto.PatientRecordSystem.Service
             return await _context.Concepts.FirstOrDefaultAsync(c => c.Value == value);
         }
 
-        public async Task<Concept?> RetreiveConceptByIdAsync(Guid? guid)
+        public async Task<Concept?> RetreiveConceptByIdAsync(Guid? id)
         {
-            return await _context.Concepts.FirstOrDefaultAsync(c => c.Id == guid);
+            if(id == null) throw new ArgumentNullException($"{nameof(id)} cannot be null");
+
+            return await _context.Concepts.FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }
