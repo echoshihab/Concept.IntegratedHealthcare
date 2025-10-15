@@ -12,6 +12,10 @@ using Proto.PatientRecordSystem.Persistence.Service;
 using MassTransit;
 using Proto.PatientRecordSystem.Service.Mapping.Interfaces;
 using RabbitMQ.Client;
+using Proto.PatientRecordSystem.Service.Integration.Interfaces;
+using Proto.PatientRecordSystem.Service.Integration;
+using Proto.PatientRecordSystem.Service.Queue.Interfaces;
+using Proto.PatientRecordSystem.Service.Queue;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,14 +61,25 @@ builder.Services.AddMassTransit(x =>
 // Patient Domain services
 builder.Services.AddScoped<IDomainService<PatientDto, Patient>, PatientDomainService>();
 
-// Mapping Services
+// Domain Mapping Services
 builder.Services.AddScoped<IMappingService<PatientDto, Patient>, PatientMappingService>();
+
+// Fhir Mapping Services
+builder.Services.AddScoped<IFhirMappingService<Patient, Hl7.Fhir.Model.Patient>, PatientFhirMappingService>();
 
 // Concept Services
 builder.Services.AddScoped<IConceptService, ConceptService>();
 
 // Persistence Services
 builder.Services.AddScoped<IPersistenceService<Patient>, PatientPersistenceService>();
+
+// Integration Services
+builder.Services.AddScoped<IIntegrationService<Patient>, PatientIntegrationService>();
+
+// Queue Services
+builder.Services.AddScoped<IResourceQueueService<Hl7.Fhir.Model.Patient>, PatientResourceQueueService>();
+
+
 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
