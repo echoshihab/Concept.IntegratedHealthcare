@@ -1,26 +1,42 @@
 ﻿using Hl7.Fhir.ElementModel.Types;
+using Hl7.Fhir.Rest;
 using Microsoft.EntityFrameworkCore;
 using Proto.PatientRecordSystem.Exceptions;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service;
+using Proto.PatientRecordSystem.Service.Integration;
+using Proto.PatientRecordSystem.Service.Integration.Interfaces;
 
 namespace Proto.PatientRecordSystem.Persistence.Service
 {
     public class PatientPersistenceService : PersistenceServiceBase<Patient>
     {
         private readonly IConceptService _conceptService;
-
+        private readonly IIntegrationService<Patient> _patientIntegrationService;
         private readonly Guid patientTypeConceptId = Guid.Parse("0582e424-c9c0-4e6b-a922-0dd16fb68aea");
 
-        public PatientPersistenceService(ApplicationDbContext context, IConceptService conceptService): base(context)
+        public PatientPersistenceService(ApplicationDbContext context, IConceptService conceptService, IIntegrationService<Patient> patientIntegrationService) : base(context)
         {
             this._conceptService = conceptService;
+            _patientIntegrationService = patientIntegrationService;
         }
 
-        public override Task<Patient> CreateAsync(Patient resource)
+        public override async Task<Patient> CreateAsync(Patient resource)
         {
             resource.Individual.IndividualTypeConceptId = this.patientTypeConceptId;
-            return base.CreateAsync(resource);
+
+            var result = await base.CreateAsync(resource) ?? throw new ArgumentNullException(nameof(resource));
+
+            try
+            {
+                await _patientIntegrationService.SendAsync(resource);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failure during outbound messages via service {nameof(PatientIntegrationService)}");
+            }
+
+            return result;
         }
 
         public override async Task<IEnumerable<Patient>> QueryAsync(Dictionary<string, string> queryParams)
@@ -28,7 +44,7 @@ namespace Proto.PatientRecordSystem.Persistence.Service
             var baseQuery = base._context.Patients
                 .Include(p => p.GenderConcept)
                 .Include(p => p.Individual)
-                .ThenInclude(i => i.NameParts)               
+                .ThenInclude(i => i.NameParts)
                 .AsQueryable();
 
             if (queryParams.TryGetValue("gender", out var gender) && gender is not null)
@@ -56,11 +72,11 @@ namespace Proto.PatientRecordSystem.Persistence.Service
             }
 
             if (queryParams.TryGetValue("birthDate", out var birthDateParam) && DateOnly.TryParseExact(birthDateParam, "YYYY-mm-dd", out var birthDate))
-            {              
+            {
                 baseQuery = baseQuery.Where(p => p.BirthDay == birthDate.Day && p.BirthMonth == birthDate.Month && p.BirthYear == birthDate.Year);
             }
 
-            return await baseQuery.ToListAsync();           
+            return await baseQuery.ToListAsync();
         }
 
         /// <summary>
@@ -70,7 +86,7 @@ namespace Proto.PatientRecordSystem.Persistence.Service
         /// <returns>The <see cref="Patient"/> entity if found.</returns>
         /// <exception cref="InvalidOperationException">Thrown if no patient is found with the specified MRN.</exception>
         public override async Task<Patient> GetAsync(string mrn)
-        {   
+        {
             if (!Integer.TryParse(mrn, out var patientMrn))
             {
                 throw new FormatException("Invalid format for MRN");
@@ -80,7 +96,7 @@ namespace Proto.PatientRecordSystem.Persistence.Service
                 .Include(p => p.GenderConcept)
                 .Include(p => p.Individual)
                     .ThenInclude(i => i.NameParts)
-                .FirstOrDefaultAsync(p => p.Mrn == patientMrn) 
+                .FirstOrDefaultAsync(p => p.Mrn == patientMrn)
                 ?? throw new KeyNotFoundException($"No patient found with MRN: {mrn}");
         }
 
@@ -113,7 +129,7 @@ namespace Proto.PatientRecordSystem.Persistence.Service
                 if (match == null)
                 {
                     // update removes the name
-                    this._context.NameParts.Remove(namePart);  
+                    this._context.NameParts.Remove(namePart);
                     continue;
                 }
 
@@ -135,7 +151,9 @@ namespace Proto.PatientRecordSystem.Persistence.Service
             }
 
             await this._context.SaveChangesAsync();
+
+
             return resource;
         }
-    }    
+    }
 }
