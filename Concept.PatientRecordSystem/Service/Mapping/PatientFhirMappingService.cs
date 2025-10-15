@@ -6,9 +6,9 @@ namespace Proto.PatientRecordSystem.Service.Mapping
 {
     public class PatientFhirMappingService : IFhirMappingService<Patient, Hl7.Fhir.Model.Patient>
     {
-        private readonly ConceptService _conceptService;
+        private readonly IConceptService _conceptService;
 
-        public PatientFhirMappingService(ConceptService conceptService)
+        public PatientFhirMappingService(IConceptService conceptService)
         {
             _conceptService = conceptService;
         }
