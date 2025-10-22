@@ -50,14 +50,16 @@ namespace Proto.PatientRecordSystem.Service.Mapping
 
             if (patientLanguage != null)
             {
+                var languageCode = await this._conceptService.RetreiveConceptByIdAsync(patientLanguage.LanguageConceptId) ?? throw new ArgumentNullException();
+
                 fhirPatient.Communication.Add(new Hl7.Fhir.Model.Patient.CommunicationComponent
                 {
-                    Language = {
+                    Language = new Hl7.Fhir.Model.CodeableConcept{
                         Coding = new List<Hl7.Fhir.Model.Coding>
                         {
                             new Hl7.Fhir.Model.Coding {
                                 System = "http://hl7.org/fhir/us/core/ValueSet/simple-language",
-                                Code = patientLanguage.LanguageConcept.Value
+                                Code = languageCode.Value
                             }
                         }
                         }
@@ -69,7 +71,7 @@ namespace Proto.PatientRecordSystem.Service.Mapping
 
             var emailConceptId = (await _conceptService.RetreiveConceptAsync("email"))?.Id ?? throw new NullReferenceException();
 
-            var phoneContactPoint = persistentResource.Telecoms.FirstOrDefault(c => c.ContactSystemConcept.Id == phoneConceptId);
+            var phoneContactPoint = persistentResource.Telecoms.FirstOrDefault(c => c.ContactPointUseConceptId == phoneConceptId);
 
             if (phoneContactPoint != null)
             {
@@ -88,7 +90,7 @@ namespace Proto.PatientRecordSystem.Service.Mapping
                     });
                 }
             }
-            var emailContactPoint = persistentResource.Telecoms.FirstOrDefault(c => c.ContactPointUseConcept.Id == emailConceptId);
+            var emailContactPoint = persistentResource.Telecoms.FirstOrDefault(c => c.ContactPointUseConceptId == emailConceptId);
 
             if (emailContactPoint != null)
             {

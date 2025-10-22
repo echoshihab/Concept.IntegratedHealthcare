@@ -1,7 +1,6 @@
 ﻿using Hl7.Fhir.ElementModel.Types;
 using Hl7.Fhir.Rest;
 using Microsoft.EntityFrameworkCore;
-using Proto.PatientRecordSystem.Exceptions;
 using Proto.PatientRecordSystem.Persistence.Models;
 using Proto.PatientRecordSystem.Service;
 using Proto.PatientRecordSystem.Service.Integration;
@@ -18,14 +17,14 @@ namespace Proto.PatientRecordSystem.Persistence.Service
         public PatientPersistenceService(ApplicationDbContext context, IConceptService conceptService, IIntegrationService<Patient> patientIntegrationService) : base(context)
         {
             this._conceptService = conceptService;
-            _patientIntegrationService = patientIntegrationService;
+            this._patientIntegrationService = patientIntegrationService;
         }
 
         public override async Task<Patient> CreateAsync(Patient resource)
         {
             resource.Individual.IndividualTypeConceptId = this.patientTypeConceptId;
 
-            var result = await base.CreateAsync(resource) ?? throw new ArgumentNullException(nameof(resource));
+            //var result = await base.CreateAsync(resource) ?? throw new ArgumentNullException(nameof(resource));
 
             try
             {
@@ -33,10 +32,10 @@ namespace Proto.PatientRecordSystem.Persistence.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failure during outbound messages via service {nameof(PatientIntegrationService)}");
+                Console.WriteLine($"Failure sending outbound messages via service {nameof(PatientIntegrationService)}");
             }
 
-            return result;
+            return resource;
         }
 
         public override async Task<IEnumerable<Patient>> QueryAsync(Dictionary<string, string> queryParams)
@@ -150,8 +149,7 @@ namespace Proto.PatientRecordSystem.Persistence.Service
                 });
             }
 
-            await this._context.SaveChangesAsync();
-
+            await this._context.SaveChangesAsync();            
 
             return resource;
         }
