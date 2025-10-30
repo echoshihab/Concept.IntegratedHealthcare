@@ -30,6 +30,7 @@ builder.Services.AddControllers(options =>
 builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Patient>, PatientResourceService>();
 builder.Services.AddScoped<IResourceService<Hl7.Fhir.Model.Practitioner>, PractionerResourceService>();
 
+var queues = builder.Configuration.GetSection("RabbitMqQueues").Get<List<string>>() ?? throw new ArgumentNullException();
 // Rabbitmq
 builder.Services.AddMassTransit(x =>
 {
@@ -41,22 +42,35 @@ builder.Services.AddMassTransit(x =>
             h.Password("guest");
         });
 
-        cfg.Message<Hl7.Fhir.Model.Resource>(x =>
+        cfg.Message<Hl7.Fhir.Model.Patient>(p =>
         {
-            x.SetEntityName("Inh.FhirResource");
-        });
-               
-
-        cfg.Publish<Hl7.Fhir.Model.Resource>(p =>
-        {
-            p.ExchangeType = ExchangeType.Direct;
-            p.Durable = false;                                                 
+            p.SetEntityName("Inh.Resources");            
         });
 
-        cfg.ConfigureEndpoints(context);
+        cfg.Publish<Hl7.Fhir.Model.Patient>(p =>
+        {
+            p.Durable = true;
+            p.Exclude = true;   
+        });
+
+        foreach (var q in queues)
+        {
+            cfg.ReceiveEndpoint(q, e=>
+            {
+                e.ConfigureConsumeTopology = false;
+
+                e.SetQueueArgument("x-dead-letter-exchange", "unroutable-exchange");
+                e.SetQueueArgument("x-message-ttl", 86400000);
+
+                e.Bind("Inh.Resources", b =>
+                {
+                    b.Durable = true;
+                });
+                
+            });
+        }     
     });
 });
-
 
 // Patient Domain services
 builder.Services.AddScoped<IDomainService<PatientDto, Patient>, PatientDomainService>();
