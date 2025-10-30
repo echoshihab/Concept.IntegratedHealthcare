@@ -11,7 +11,7 @@ namespace Proto.PatientRecordSystem.Controllers.Fhir
         public PatientController(IResourceService<Patient> patientResourceService) : base(patientResourceService)
         {
 
-        }
+        }     
 
     }
 }
